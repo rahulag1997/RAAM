@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">RAAM</string>
+    <string name="nav_drawer_opened">drawer opened</string>
+    <string name="nav_drawer_closed">drawer closed</string>
+    <string name="accounts">Accounts</string>
+    <string name="balance_sheet">Balance Sheet</string>
+    <string name="stock">Stock</string>
+    <string name="bank_acc">Bank Acc</string>
+    <string name="cash_acc">Cash Acc</string>
+    <string name="expense_acc">Expense Acc</string>
+    <string name="sales_acc">Sales Acc</string>
+    <string name="sundry_creditors">Sundry Creditors</string>
+    <string name="sundry_debttors">Sundry Debttors</string>
+    <string name="date">Date</string>
+    <string name="click_to_set_date">Click to set Date</string>
+    <string name="name">Name</string>
+    <string name="submit">Submit</string>
+    <string name="additional_notes">Additional Notes</string>
+    <string name="amount">Amount</string>
+    <string name="new_bill">New Bill</string>
+    <string name="new_receipt">New Receipt</string>
+    <string name="new_expense">New Expense</string>
+    <string name="new_purchase">New Purchase</string>
+    <string name="new_payment">New Payment</string>
+    <string name="expense_details">Expense Details</string>
+    <string name="title_activity_tp">tp</string>
+    <string name="home">Home</string>
+    <string name="s_no">S.No.</string>
+    <string name="item">Item</string>
+    <string name="qty">Qty</string>
+    <string name="unit">Unit</string>
+    <string name="rate">Rate</string>
+    <string name="add_item">+ Add Item</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="item_name">Item Name</string>
+    <string name="debit">Debit</string>
+    <string name="credit">Credit</string>
+    <string name="balance">Balance</string>
+    <string name="test">Test</string>
+    <string name="particulars">Particulars</string>
+    <string name="sale">Sale</string>
+    <string name="purchase">Purchase</string>
+    <string name="don_t_ask_for_confirmation_again">Don\'t ask for confirmation again</string>
+    <string name="quantity">Quantity</string>
+    <string-array name="units">
+        <item>Dz</item>
+        <item>Pcs</item>
+    </string-array>
+</resources>

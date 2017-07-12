@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home" />
+
+        <item
+            android:id="@+id/nav_bs"
+            android:icon="@drawable/ic_poll_black_24dp"
+            android:title="@string/balance_sheet" />
+        <item
+            android:id="@+id/nav_stock"
+            android:icon="@drawable/ic_local_grocery_store_black_24dp"
+            android:title="@string/stock" />
+
+        <item
+            android:id="@+id/nav_bill"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/new_bill" />
+        <item
+            android:id="@+id/nav_receipt"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/new_receipt" />
+        <item
+            android:id="@+id/nav_expense"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/new_expense" />
+        <item
+            android:id="@+id/nav_purchase"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/new_purchase" />
+        <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="@string/new_payment" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Settings" />
+    </group>
+</menu>
