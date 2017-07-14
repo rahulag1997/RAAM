@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,39 +23,55 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
-public class NewPurchase extends BaseActivity
+public class NewPurchase extends BaseActivity implements CustomListAdapterBillItem.updateTotal
 {
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
-    private int mYear, mMonth, mDay;
-    List<String> names= Arrays.asList("Rahul","Aman","Ashok","Sid","Raj","Aryan","Sidd","Ram","Rajesh","Ratan","Rashi");
-    String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};
-    String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};
-    String[] units={"Dz","Pcs"};
-    ArrayList<BILL_ITEM> data=new ArrayList<BILL_ITEM>();
+    ArrayList<String> names=new ArrayList<>();
+    String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};  //TODO replace with stock groups
+    String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};    //TODO replace with stocks dynamically
+    String[] units={"Dz","Pcs"};    //TODO replace with units
+    ArrayList<BILL_ITEM> data=new ArrayList<>();
     CustomListAdapterBillItem c_adapter;
     Integer total=0;
     TextView total_tv;
+    DatabaseHelper db;
 
+    String[] acc_features, acc_view_features;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_purchase);
+        setContentView(R.layout.activity_new_bill);
         sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         getSupportActionBar().setTitle("Purchase");
-
         showFAB();
+        acc_features = getResources().getStringArray(R.array.acc_features);
+        acc_view_features = getResources().getStringArray(R.array.acc_view_features);
 
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,names);
+        db=new DatabaseHelper(this,"Creditor", acc_features.length, acc_features);
+        Cursor c=db.getData();
+
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+            {
+                names.add(c.getString(1));
+            }
+        }
+
+
+
+
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
         AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
         actv.setAdapter(adapter);
 
         ListView list=(ListView)findViewById(R.id.item_list);
-        c_adapter= new CustomListAdapterBillItem(this,data);
+        c_adapter= new CustomListAdapterBillItem(this,data,this);
         list.setAdapter(c_adapter);
         total_tv=(TextView)findViewById(R.id.total_tv);
         total_tv.setText(Integer.toString(total));
@@ -72,9 +88,9 @@ public class NewPurchase extends BaseActivity
         // Get Current Date
         final TextView dateText=(TextView) findViewById(R.id.dateEditText);
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener()
@@ -96,7 +112,6 @@ public class NewPurchase extends BaseActivity
 
                         dateText.setText(day + "-" + month + "-" + yearS);
                         dateText.setError(null);
-
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -106,19 +121,21 @@ public class NewPurchase extends BaseActivity
     {
         View new_item=View.inflate(this,R.layout.new_item,null);
         final Spinner stk_grp_spinner=(Spinner)new_item.findViewById(R.id.stock_group_spinner);
-        ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,testStock);
+        ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,testStock);
         stk_grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stk_grp_spinner.setAdapter(stk_grp_adapter);
 
         final Spinner stk_item_spinner=(Spinner)new_item.findViewById(R.id.stock_spinner);
-        final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,testStock_list);
+        final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,testStock_list);
         stk_item_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stk_item_spinner.setAdapter(stk_item_adapter);
 
-        stk_grp_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        stk_grp_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                testStock_list[position]=testStock[position];
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                testStock_list[position]=testStock[position];   //TODO CHANGE STOCK DYNAMICALLY
                 stk_item_adapter.notifyDataSetChanged();
             }
 
@@ -130,7 +147,7 @@ public class NewPurchase extends BaseActivity
         });
 
         final Spinner unit_spinner=(Spinner)new_item.findViewById(R.id.unit_spinner);
-        ArrayAdapter<String> unit_adapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,units);
+        ArrayAdapter<String> unit_adapter= new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,units);
         unit_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unit_spinner.setAdapter(unit_adapter);
 
@@ -146,13 +163,14 @@ public class NewPurchase extends BaseActivity
         a_dialog.setOnShowListener(new DialogInterface.OnShowListener()
         {
             @Override
-            public void onShow(DialogInterface dialog) {
-
+            public void onShow(DialogInterface dialog)
+            {
                 final Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
+                button.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(View view)
+                    {
                         String quantity=quantity_et.getText().toString();
                         String rate=rate_et.getText().toString();
                         boolean error=false;
@@ -171,9 +189,9 @@ public class NewPurchase extends BaseActivity
                         {
                             c_adapter.addItem(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             c_adapter.notifyDataSetChanged();
-                            Toast.makeText(getApplicationContext(),"Item Added",Toast.LENGTH_SHORT).show();
+                            //data.add(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             total+=Integer.parseInt(quantity)*Integer.parseInt(rate);
-                            total_tv.setText(total.toString());
+                            total_tv.setText(Integer.toString(total));
                             a_dialog.dismiss();
                         }
                     }
@@ -185,15 +203,16 @@ public class NewPurchase extends BaseActivity
 
     public void submit(View view)
     {
-        TextView dateET=(TextView) findViewById(R.id.dateEditText);
+        TextView dateTV=(TextView) findViewById(R.id.dateEditText);
         EditText nameET=(EditText)findViewById(R.id.name_actv);
         TextView amtET=(TextView) findViewById(R.id.total_tv);
-        final String date=(dateET.getText()).toString();
+        final String date=(dateTV.getText()).toString();
         final String name=(nameET.getText()).toString();
         final String amount=(amtET.getText()).toString();
         boolean showDialog=true;
-        if(date.equals("")) {
-            dateET.setError("Required");
+        if(date.equals(""))
+        {
+            dateTV.setError("Required");
             showDialog = false;
         }
         if(!(names.contains(name)))
@@ -206,14 +225,13 @@ public class NewPurchase extends BaseActivity
             Toast.makeText(getApplicationContext(),"No Item Added",Toast.LENGTH_SHORT).show();
             showDialog = false;
         }
-        View customDialogView= (View)View.inflate(this,R.layout.confirm_dialog,null);
+        View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
         final CheckBox cb=(CheckBox)customDialogView.findViewById(R.id.cb);
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Confirm?");
         builder.setView(customDialogView);
-
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
@@ -221,12 +239,11 @@ public class NewPurchase extends BaseActivity
                 if(cb.isChecked())
                 {
                     Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor=sharedPreferences.edit();
                     editor.putBoolean("SHOW_DIALOG",false);
                     editor.apply();
-
                 }
-                addNewPurchase(date,name,amount);
+                addNewBill(date,name,amount);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -239,19 +256,43 @@ public class NewPurchase extends BaseActivity
         {
             if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
                 builder.create().show();
-            else {
-                addNewPurchase(date,name,amount);
-            }
-
+            else
+                addNewBill(date,name,amount);
         }
     }
 
-    private void addNewPurchase(String date,String name,String amount)
+    private void addNewBill(String date,String name,String amount)
     {
+        //TODO also update stock in background
+        //TODO add bill details in background
+
+        Cursor c_acc=db.getData();
+        while (c_acc.moveToNext())
+        {
+            if(c_acc.getString(1).equals(name))
+                break;
+        }
+        int balance=Integer.parseInt(c_acc.getString(4));
+        int credit=Integer.parseInt(c_acc.getString(3));
+
+        balance=balance+Integer.parseInt(amount);
+        credit=credit+Integer.parseInt(amount);
+
+        db.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
+
+        DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
+        db_party.insertData(new String[] {"Purchase on "+date,"---",amount,Integer.toString(balance),"","Bill"});
+
         Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
             startActivity(new Intent(getApplicationContext(),NewBill.class));
         finish();
     }
 
+    @Override
+    public void onProcessFilter(int change)
+    {
+        this.total-=change;
+        total_tv.setText(Integer.toString(this.total));
+    }
 }

@@ -32,6 +32,9 @@ public class Accounts extends BaseActivity {
 
     public void openCash(View view)
     {
+        Intent i=new Intent(this,AccountView.class);
+        i.putExtra("Name",getString(R.string.cash_in_hand));
+        startActivity(i);
     }
 
     public void openBank(View view)
@@ -41,10 +44,16 @@ public class Accounts extends BaseActivity {
 
     public void openExpense(View view)
     {
+        Intent i=new Intent(this,AccountView.class);
+        i.putExtra("Name","EXP");
+        startActivity(i);
     }
 
     public void openSales(View view)
     {
+        Intent i=new Intent(this,AccountView.class);
+        i.putExtra("Name","SALES");
+        startActivity(i);
     }
 
     public void openSC(View view)

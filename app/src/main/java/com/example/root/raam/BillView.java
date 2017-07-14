@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class BillView extends BaseActivity
 {
-    ArrayList<BILL_ITEM> data=new ArrayList<BILL_ITEM>();
-    CustomListAdapterBillItem c_adapter;
+    ArrayList<BILL_ITEM> data=new ArrayList<>();
+    //CustomListAdapterBillItem c_adapter;
     Integer total=0;
     TextView total_tv;
 
@@ -22,20 +22,20 @@ public class BillView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_view);
-        getSupportActionBar().setTitle("Bill No. ");
+        getSupportActionBar().setTitle(R.string.bill_no);
         showFab();
 
         View name_line=findViewById(R.id.name_line);
-        ((TextView)name_line.findViewById(R.id.type_tv)).setText("Name");
-        ((TextView)name_line.findViewById(R.id.value_tv)).setText("Name_Party");
+        ((TextView)name_line.findViewById(R.id.type_tv)).setText(getString(R.string.name));
+        ((TextView)name_line.findViewById(R.id.value_tv)).setText(R.string.name_party);
 
         View date_line=findViewById(R.id.date_line);
-        ((TextView)date_line.findViewById(R.id.type_tv)).setText("Date");
-        ((TextView)date_line.findViewById(R.id.value_tv)).setText("_DATE_");
+        ((TextView)date_line.findViewById(R.id.type_tv)).setText(getString(R.string.date));
+        ((TextView)date_line.findViewById(R.id.value_tv)).setText(getString(R.string.date));
 
         ListView list=(ListView)findViewById(R.id.item_list);
-        c_adapter= new CustomListAdapterBillItem(this,data);
-        list.setAdapter(c_adapter);
+       // c_adapter= new CustomListAdapterBillItem(this,data);
+        //list.setAdapter(c_adapter);
         total_tv=(TextView)findViewById(R.id.total_tv);
         total_tv.setText(Integer.toString(total));
 

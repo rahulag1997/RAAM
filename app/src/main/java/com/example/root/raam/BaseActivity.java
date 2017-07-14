@@ -109,6 +109,4 @@ public class BaseActivity extends AppCompatActivity implements
 
         return false;
     }
-
-    //TODO add settings menu
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -20,8 +19,8 @@ import java.util.Calendar;
 
 public class NewExpense extends BaseActivity
 {
-    private int mYear, mMonth, mDay;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,9 +43,9 @@ public class NewExpense extends BaseActivity
         // Get Current Date
         final TextView dateText=(TextView) findViewById(R.id.dateEditText);
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener()
@@ -77,7 +76,9 @@ public class NewExpense extends BaseActivity
     {
         TextView dateET=(TextView) findViewById(R.id.dateEditText);
         EditText amtET=(EditText)findViewById(R.id.amountEditText);
-        final String details=((EditText)findViewById(R.id.detailsEditText)).getText().toString();
+        String details=((EditText)findViewById(R.id.detailsEditText)).getText().toString();
+        if(details.equals(""))
+            details="Expense";
         final String date=(dateET.getText()).toString();
         final String amount=(amtET.getText()).toString();
         boolean showDialog=true;
@@ -90,12 +91,13 @@ public class NewExpense extends BaseActivity
             amtET.setError("Required");
             showDialog = false;
         }
-        View customDialogView= (View)View.inflate(this,R.layout.confirm_dialog,null);
+        View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
         final CheckBox cb=(CheckBox)customDialogView.findViewById(R.id.cb);
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Confirm?");
         builder.setView(customDialogView);
 
+        final String finalDetails = details;
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -104,12 +106,12 @@ public class NewExpense extends BaseActivity
                 if(cb.isChecked())
                 {
                     Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor=sharedPreferences.edit();
                     editor.putBoolean("SHOW_DIALOG",false);
                     editor.apply();
 
                 }
-                addNewExpense(date,amount,details);
+                addNewExpense(date,amount, finalDetails);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -131,6 +133,22 @@ public class NewExpense extends BaseActivity
 
     private void addNewExpense(String date,String amount,String details)
     {
+        String[] acc_view_features=getResources().getStringArray(R.array.acc_view_features);
+
+        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
+        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
+        db_cashInHand.insertData(new String[] {details+" "+date,amount,"---",Integer.toString(updatedCash),details,"Expense"});
+        editor=sharedPreferences.edit();
+        editor.putInt("CASH_IN_HAND",updatedCash);
+        editor.apply();
+
+        int updatedExp=sharedPreferences.getInt("EXP",0)+Integer.parseInt(amount);
+        DatabaseHelper db_exp=new DatabaseHelper(this,"EXP",acc_view_features.length,acc_view_features);
+        db_exp.insertData(new String[] {details,"---",amount,Integer.toString(updatedExp),details,"Expense"});
+        editor=sharedPreferences.edit();
+        editor.putInt("EXP",updatedExp);
+        editor.apply();
+
         Toast.makeText(getApplicationContext(),"Expense Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
             startActivity(new Intent(getApplicationContext(),NewExpense.class));

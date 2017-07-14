@@ -42,8 +42,44 @@
     <string name="purchase">Purchase</string>
     <string name="don_t_ask_for_confirmation_again">Don\'t ask for confirmation again</string>
     <string name="quantity">Quantity</string>
+    <string name="acc_list">Account_List</string>
+    <string name="acc_details">Account_Details</string>
+    <string name="ob">Opening Balance</string>
+    <string name="cash_in_hand">Cash in Hand</string>
+    <string name="name_party">Name_Party</string>
+    <string name="bill_no">Bill No.</string>
     <string-array name="units">
         <item>Dz</item>
         <item>Pcs</item>
+    </string-array>
+    <string-array name="acc_types">
+        <item>Bank</item>
+        <item>Cash</item>
+        <item>Sales</item>
+        <item>Expense</item>
+        <item>Creditor</item>
+        <item>Debtor</item>
+    </string-array>
+    <string-array name="acc_features">
+        <item>Name</item>
+        <item>Debit</item>
+        <item>Credit</item>
+        <item>Balance</item>
+        <item>Type</item>
+    </string-array>
+    <string-array name="acc_view_features">
+        <item>Particulars</item>
+        <item>Debit</item>
+        <item>Credit</item>
+        <item>Balance</item>
+        <item>ExtraNote</item>
+    </string-array>
+    <string-array name="voture_type">
+        <item>Bill</item>
+        <item>Expense</item>
+        <item>Payment</item>
+        <item>Purchase</item>
+        <item>Receipt</item>
+        <item>OB</item>
     </string-array>
 </resources>

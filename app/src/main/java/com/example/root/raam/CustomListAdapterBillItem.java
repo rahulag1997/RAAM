@@ -1,11 +1,8 @@
 package com.example.root.raam;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,30 +12,37 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
 
-public class CustomListAdapterBillItem extends BaseAdapter
+class CustomListAdapterBillItem extends BaseAdapter
 {
-    String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};
-    String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};
-    String[] units={"Dz","Pcs"};
+    private String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};
+    private String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};
+    private String[] units={"Dz","Pcs"};
     private ArrayList<BILL_ITEM> data;
-    LayoutInflater layoutInflater;
+    private LayoutInflater layoutInflater;
     Context context;
-    public CustomListAdapterBillItem( Context context, ArrayList<BILL_ITEM> data)
+    private int change=0;
+    private updateTotal myUpdater;
+
+    interface updateTotal
     {
+        void onProcessFilter(int change);
+    }
+
+    CustomListAdapterBillItem(Context context, ArrayList<BILL_ITEM> data, updateTotal callback)
+    {
+        myUpdater=callback;
         this.context=context;
         this.data=data;
         layoutInflater = LayoutInflater.from(context);
     }
-    public void addItem(BILL_ITEM item)
+    void addItem(BILL_ITEM item)
     {
         data.add(item);
         notifyDataSetChanged();
@@ -84,20 +88,25 @@ public class CustomListAdapterBillItem extends BaseAdapter
             @Override
             public void onClick(View v)
             {
+                BILL_ITEM selected_item=(BILL_ITEM)getItem(position);
+
                 View new_item=View.inflate(context,R.layout.new_item,null);
+
                 final Spinner stk_grp_spinner=(Spinner)new_item.findViewById(R.id.stock_group_spinner);
-                ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,testStock);
+                ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,testStock);
                 stk_grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 stk_grp_spinner.setAdapter(stk_grp_adapter);
 
                 final Spinner stk_item_spinner=(Spinner)new_item.findViewById(R.id.stock_spinner);
-                final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,testStock_list);
+                final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,testStock_list);
                 stk_item_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 stk_item_spinner.setAdapter(stk_item_adapter);
 
-                stk_grp_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                stk_grp_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                {
                     @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                    {
                         testStock_list[position]=testStock[position];
                         stk_item_adapter.notifyDataSetChanged();
                     }
@@ -109,24 +118,36 @@ public class CustomListAdapterBillItem extends BaseAdapter
                     }
                 });
 
+                final EditText quantity_et=(EditText)new_item.findViewById(R.id.quantity_et);
+
                 final Spinner unit_spinner=(Spinner)new_item.findViewById(R.id.unit_spinner);
-                ArrayAdapter<String> unit_adapter= new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,units);
+                ArrayAdapter<String> unit_adapter= new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,units);
                 unit_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 unit_spinner.setAdapter(unit_adapter);
+
+                final EditText rate_et=(EditText)new_item.findViewById(R.id.rate_et);
+
+                //stk_grp_spinner.setSelection(testStock.getIndex(selected_item.stk_grp);
+                //stk_item_spinner.setSelection(testStock_list.getIndex(selected_item.stk_item);
+                quantity_et.setText(selected_item.quantity);
+                //unit_spinner.setSelection(units.getIndex(selected_item.unit);
+                rate_et.setText(selected_item.rate);
+
+                change=Integer.parseInt(selected_item.quantity)*Integer.parseInt(selected_item.rate);
+
 
                 final AlertDialog.Builder builder=new AlertDialog.Builder(context);
                 builder.setTitle("Edit Item");
                 builder.setView(new_item);
 
-                final EditText quantity_et=(EditText)new_item.findViewById(R.id.quantity_et);
-                final EditText rate_et=(EditText)new_item.findViewById(R.id.rate_et);
-
                 builder.setPositiveButton("Edit",null);
+                builder.setNegativeButton("Delete",null);
                 final AlertDialog a_dialog=builder.create();
                 a_dialog.setOnShowListener(new DialogInterface.OnShowListener()
                 {
                     @Override
-                    public void onShow(DialogInterface dialog) {
+                    public void onShow(DialogInterface dialog)
+                    {
 
                         final Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                         button.setOnClickListener(new View.OnClickListener() {
@@ -151,10 +172,26 @@ public class CustomListAdapterBillItem extends BaseAdapter
                                 {
                                     data.set(position,new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                                     notifyDataSetChanged();
+                                    change-=Integer.parseInt(quantity)*Integer.parseInt(rate);
+                                    myUpdater.onProcessFilter(change);
                                     a_dialog.dismiss();
                                 }
                             }
                         });
+
+                        final Button dButton=((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                        dButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                data.remove(position);
+                                notifyDataSetChanged();
+                                myUpdater.onProcessFilter(change);
+                                a_dialog.dismiss();
+
+                            }
+                        });
+
+
                     }
                 });
                 a_dialog.show();
