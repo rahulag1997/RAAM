@@ -16,6 +16,7 @@ public class SundryDebtors extends BaseActivity
     private String[] acc_features;
     DatabaseHelper db;
     ArrayList<DATA_ITEM> data=new ArrayList<>();
+    CustomListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,16 +26,15 @@ public class SundryDebtors extends BaseActivity
         acc_features=getResources().getStringArray(R.array.acc_features);
         db=new DatabaseHelper(this,"Debtor",acc_features.length,acc_features);
 
-        getData();
         ListView list = (ListView) findViewById(R.id.list);
-        CustomListAdapter adapter = new CustomListAdapter(this, data);
+        adapter = new CustomListAdapter(this, data,"Debtor");
         list.setAdapter(adapter);
     }
 
     private void getData()
     {
         int total=0;
-        Cursor c=db.getData();
+        Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
         while (c.moveToNext())
@@ -56,5 +56,14 @@ public class SundryDebtors extends BaseActivity
                 startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",5));
             }
         });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        data.clear();
+        getData();
+        adapter.notifyDataSetChanged();
     }
 }

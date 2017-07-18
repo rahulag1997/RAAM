@@ -38,7 +38,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     CustomListAdapterBillItem c_adapter;
     Integer total=0;
     TextView total_tv;
-    DatabaseHelper db;
+    DatabaseHelper db_accList;
 
     String[] acc_features, acc_view_features;
     @Override
@@ -52,8 +52,8 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         acc_features = getResources().getStringArray(R.array.acc_features);
         acc_view_features = getResources().getStringArray(R.array.acc_view_features);
 
-        db=new DatabaseHelper(this,"Debtor", acc_features.length, acc_features);
-        Cursor c=db.getData();
+        db_accList =new DatabaseHelper(this,"Debtor", acc_features.length, acc_features);
+        Cursor c= db_accList.getData();
         names.add("Cash");
 
         if(c.getCount()!=0)
@@ -267,29 +267,32 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         //TODO also update stock in background
         //TODO add bill details in background
 
-        Cursor c_acc=db.getData();
-        while (c_acc.moveToNext())
+        Cursor cursor_accList= db_accList.getData();
+        while (cursor_accList.moveToNext())
         {
-            if(c_acc.getString(1).equals(name))
+            if(cursor_accList.getString(1).equals(name))
                 break;
         }
-        int balance=Integer.parseInt(c_acc.getString(4));
-        int credit=Integer.parseInt(c_acc.getString(3));
+        int balance=Integer.parseInt(cursor_accList.getString(4));
+        int credit=Integer.parseInt(cursor_accList.getString(3));
 
         balance=balance+Integer.parseInt(amount);
         credit=credit+Integer.parseInt(amount);
+        //Update in acc_list
+        db_accList.updateData(new String[] {name,cursor_accList.getString(2),Integer.toString(credit),Integer.toString(balance),cursor_accList.getString(5)});
 
-        db.updateData(new String[] {name,c_acc.getString(2),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
-
+        //insert in party account
         DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[] {"Bill on "+date,"---",amount,Integer.toString(balance),"","Bill"});
+        db_party.insertData(new String[] {"Bill on "+date,amount,"","Bill",date});
 
-        int updatedSales=sharedPreferences.getInt("SALES",0)+Integer.parseInt(amount);
-
+        //insert in sales account
         DatabaseHelper db_sales=new DatabaseHelper(this,"SALES",acc_view_features.length,acc_view_features);
-        db_sales.insertData(new String[] {name+" "+date,"---",amount,Integer.toString(updatedSales),"","Bill"});
+        db_sales.insertData(new String[] {name+" "+date,amount,"","Bill",date});
+
+        //update sales balance
         editor=sharedPreferences.edit();
-        editor.putInt("SALES",updatedSales);
+        int updatedSales=sharedPreferences.getInt("SALES",0)+Integer.parseInt(amount);
+        editor.putInt(getString(R.string.sales),updatedSales);
         editor.apply();
 
         Toast.makeText(getApplicationContext(),"Bill Added",Toast.LENGTH_SHORT).show();

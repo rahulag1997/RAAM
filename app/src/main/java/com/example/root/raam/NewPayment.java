@@ -189,19 +189,20 @@ public class NewPayment extends BaseActivity
         int balance=Integer.parseInt(c_acc.getString(4));
         int debit=Integer.parseInt(c_acc.getString(2));
 
+        //update acc list
         balance=balance-Integer.parseInt(amount);
         debit=debit+Integer.parseInt(amount);
-
-        String[] data_item={"Payment on "+date,amount,"---",Integer.toString(balance),extraNote,"Payment"};
-
-        db.insertData(data_item);
-
         updateACC(name,Integer.toString(debit),c_acc.getString(3),Integer.toString(balance),c_acc.getString(5),isBank);
 
-        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
+        //insert in party account
+        db.insertData(new String[] {"Payment on "+date,amount,extraNote,"Payment",date});
 
+        //insert into cash acc
         DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {name+" "+date,amount,"---",Integer.toString(updatedCash),extraNote,"Payment"});
+        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,"Payment",date});
+
+        //update cash
+        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt("CASH_IN_HAND",updatedCash);
         editor.apply();

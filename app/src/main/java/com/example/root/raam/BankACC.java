@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class BankACC extends BaseActivity
     private String[] acc_features;
     DatabaseHelper db;
     ArrayList<DATA_ITEM> data=new ArrayList<>();
+    CustomListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -29,16 +31,15 @@ public class BankACC extends BaseActivity
         acc_features=this.getResources().getStringArray(R.array.acc_features);
 
         db=new DatabaseHelper(this,"Bank",acc_features.length,acc_features);
-        getData();
         ListView list = (ListView) findViewById(R.id.list);
-        CustomListAdapter adapter = new CustomListAdapter(this, data);
+        adapter = new CustomListAdapter(this, data,"Bank");
         list.setAdapter(adapter);
     }
 
     private void getData()
     {
         int total=0;
-        Cursor c=db.getData();
+        Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
         while (c.moveToNext())
@@ -61,4 +62,14 @@ public class BankACC extends BaseActivity
             }
         });
     }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        data.clear();
+        getData();
+        adapter.notifyDataSetChanged();
+    }
+
 }

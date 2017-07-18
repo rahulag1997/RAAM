@@ -126,7 +126,7 @@ class CustomListAdapterBillItem extends BaseAdapter
                 unit_spinner.setAdapter(unit_adapter);
 
                 final EditText rate_et=(EditText)new_item.findViewById(R.id.rate_et);
-
+                //TODO fix spinner item
                 //stk_grp_spinner.setSelection(testStock.getIndex(selected_item.stk_grp);
                 //stk_item_spinner.setSelection(testStock_list.getIndex(selected_item.stk_item);
                 quantity_et.setText(selected_item.quantity);

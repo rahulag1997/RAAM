@@ -48,6 +48,8 @@
     <string name="cash_in_hand">Cash in Hand</string>
     <string name="name_party">Name_Party</string>
     <string name="bill_no">Bill No.</string>
+    <string name="exp">EXP</string>
+    <string name="sales">SALES</string>
     <string-array name="units">
         <item>Dz</item>
         <item>Pcs</item>
@@ -69,10 +71,10 @@
     </string-array>
     <string-array name="acc_view_features">
         <item>Particulars</item>
-        <item>Debit</item>
-        <item>Credit</item>
-        <item>Balance</item>
+        <item>Amount</item>
         <item>ExtraNote</item>
+        <item>Type</item>
+        <item>Date</item>
     </string-array>
     <string-array name="voture_type">
         <item>Bill</item>

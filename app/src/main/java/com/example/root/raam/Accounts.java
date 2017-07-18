@@ -7,7 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class Accounts extends BaseActivity {
+public class Accounts extends BaseActivity
+{
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -30,31 +31,16 @@ public class Accounts extends BaseActivity {
         });
     }
 
-    public void openCash(View view)
-    {
-        Intent i=new Intent(this,AccountView.class);
-        i.putExtra("Name",getString(R.string.cash_in_hand));
-        startActivity(i);
-    }
+    public void openCash(View view) { startActivity(new Intent(this,AccountView.class).putExtra("Name",getString(R.string.cash_in_hand)).putExtra("ACC_TYPE","Cash"));  }
 
     public void openBank(View view)
     {
         startActivity(new Intent(this,BankACC.class));
     }
 
-    public void openExpense(View view)
-    {
-        Intent i=new Intent(this,AccountView.class);
-        i.putExtra("Name","EXP");
-        startActivity(i);
-    }
+    public void openExpense(View view) { startActivity(new Intent(this,AccountView.class).putExtra("Name","EXP").putExtra("ACC_TYPE","Expense"));  }
 
-    public void openSales(View view)
-    {
-        Intent i=new Intent(this,AccountView.class);
-        i.putExtra("Name","SALES");
-        startActivity(i);
-    }
+    public void openSales(View view) { startActivity(new Intent(this,AccountView.class).putExtra("Name","SALES").putExtra("ACC_TYPE","Sales"));  }
 
     public void openSC(View view)
     {

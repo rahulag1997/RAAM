@@ -22,11 +22,13 @@ public class CustomListAdapter extends BaseAdapter
 {
     private ArrayList<DATA_ITEM> data;
     LayoutInflater layoutInflater;
+    private String acc_type;
     Context context;
-    public CustomListAdapter( Context context, ArrayList<DATA_ITEM> data)
+    public CustomListAdapter( Context context, ArrayList<DATA_ITEM> data,String type)
     {
         this.context=context;
         this.data=data;
+        acc_type=type;
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -69,6 +71,7 @@ public class CustomListAdapter extends BaseAdapter
             {
                 Intent i=new Intent(context,AccountView.class);
                 i.putExtra("Name",name_tv.getText());
+                i.putExtra("ACC_TYPE",acc_type);
                 (context).startActivity(i);
             }
         });

@@ -135,16 +135,22 @@ public class NewExpense extends BaseActivity
     {
         String[] acc_view_features=getResources().getStringArray(R.array.acc_view_features);
 
-        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
+        //insert in cash account
         DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {details+" "+date,amount,"---",Integer.toString(updatedCash),details,"Expense"});
+        db_cashInHand.insertData(new String[] {details+" "+date,amount,details,"Expense",date});
+
+        //update cash balance
+        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt("CASH_IN_HAND",updatedCash);
         editor.apply();
 
+        //insert in expense account
+        DatabaseHelper db_exp=new DatabaseHelper(this,getString(R.string.exp),acc_view_features.length,acc_view_features);
+        db_exp.insertData(new String[] {details,amount,details,"Expense",date});
+
+        //update expense balance
         int updatedExp=sharedPreferences.getInt("EXP",0)+Integer.parseInt(amount);
-        DatabaseHelper db_exp=new DatabaseHelper(this,"EXP",acc_view_features.length,acc_view_features);
-        db_exp.insertData(new String[] {details,"---",amount,Integer.toString(updatedExp),details,"Expense"});
         editor=sharedPreferences.edit();
         editor.putInt("EXP",updatedExp);
         editor.apply();

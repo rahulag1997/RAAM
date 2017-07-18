@@ -277,11 +277,12 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
         balance=balance+Integer.parseInt(amount);
         credit=credit+Integer.parseInt(amount);
-
+        //update account list
         db.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
 
+        //insert into party account
         DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[] {"Purchase on "+date,"---",amount,Integer.toString(balance),"","Bill"});
+        db_party.insertData(new String[] {"Purchase on "+date,amount,"","Purchase",date});
 
         Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean("SHOW_AGAIN",true))

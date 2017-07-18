@@ -50,6 +50,7 @@
             android:layout_height="match_parent"
             android:textAlignment="viewStart"
             android:gravity="start"
+            android:inputType="number"
             android:padding="10dp"
             android:hint="Enter Amount" />
 

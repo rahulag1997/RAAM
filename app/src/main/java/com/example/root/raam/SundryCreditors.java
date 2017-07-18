@@ -16,6 +16,7 @@ public class SundryCreditors extends BaseActivity
 {
     private String[] acc_features;
     DatabaseHelper db;
+    CustomListAdapter adapter;
     ArrayList<DATA_ITEM> data=new ArrayList<DATA_ITEM>();
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -28,16 +29,16 @@ public class SundryCreditors extends BaseActivity
 
         db=new DatabaseHelper(this,"Creditor",acc_features.length,acc_features);
 
-        getData();
+
         ListView list = (ListView) findViewById(R.id.list);
-        CustomListAdapter adapter = new CustomListAdapter(this, data);
+        adapter = new CustomListAdapter(this, data,"Creditor");
         list.setAdapter(adapter);
     }
 
     private void getData()
     {
         int total=0;
-        Cursor c=db.getData();
+        Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
         while (c.moveToNext())
@@ -58,6 +59,15 @@ public class SundryCreditors extends BaseActivity
             {
                 startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",4));
             }
-            });
-        }
+        });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        data.clear();
+        getData();
+        adapter.notifyDataSetChanged();
+    }
 }

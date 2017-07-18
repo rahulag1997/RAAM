@@ -28,7 +28,8 @@ public class NewAccount extends BaseActivity
     DatabaseHelper db;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_account);
         getSupportActionBar().setTitle("New Account");
@@ -54,7 +55,6 @@ public class NewAccount extends BaseActivity
             spinner.setSelection(getIntent().getIntExtra("TYPE",0));
         }
     }
-
 
     private void showFAB()
     {
@@ -108,7 +108,7 @@ public class NewAccount extends BaseActivity
             {
                 while (cursor.moveToNext())
                 {
-                    if(cursor.getString(1).equals(name))
+                    if(cursor.getString(1).equals(name)) //1 is the coloumn corresponding to the name field
                     {
                         name_et.setError("Already Exists");
                         return;
@@ -121,14 +121,11 @@ public class NewAccount extends BaseActivity
             {
                 addNewAccount();
             }
-
         }
-
     }
 
     private void addNewAccount()
     {
-
         String amount=val_et.getText().toString();
         String name=name_et.getText().toString();
 
@@ -139,11 +136,11 @@ public class NewAccount extends BaseActivity
 
         //add opening balance into acc
         DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[]{getString(R.string.ob),"---","---",amount,"","OB"});    //ob->opening balance
+        db_party.insertData(new String[]{getString(R.string.ob),amount,"","OB",sharedPreferences.getString("Opening Day","01-01-2017")});    //ob->opening balance
 
         Toast.makeText(getApplicationContext(),"Account Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
-            startActivity(new Intent(getApplicationContext(),NewAccount.class));
+            startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",spinner.getSelectedItemPosition()));
         finish();
     }
 }
