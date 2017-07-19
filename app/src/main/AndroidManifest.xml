@@ -9,13 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".BaseActivity" />
         <activity android:name=".Accounts" />
         <activity android:name=".Stock" />
@@ -33,7 +27,16 @@
         <activity android:name=".AccountView" />
         <activity android:name=".StockView" />
         <activity android:name=".Settings" />
-        <activity android:name=".BillView"></activity>
+        <activity android:name=".BillView" />
+        <activity android:name=".WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".NewCompany"></activity>
     </application>
 
 </manifest>

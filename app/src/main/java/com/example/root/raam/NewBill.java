@@ -177,12 +177,12 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
                         boolean error=false;
                         if(quantity.equals(""))
                         {
-                            quantity_et.setError("Mandatory");
+                            quantity_et.setError("Required");
                             error=true;
                         }
                         if(rate.equals(""))
                         {
-                            rate_et.setError("Mandatory");
+                            rate_et.setError("Required");
                             error=true;
                         }
 

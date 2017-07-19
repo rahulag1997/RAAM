@@ -82,7 +82,8 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item)
+    {
         fullLayout.closeDrawer(GravityCompat.START);
 
         switch (item.getItemId())
@@ -105,8 +106,9 @@ public class BaseActivity extends AppCompatActivity implements
                                     break;
             case R.id.nav_settings: startActivity(new Intent(this,Settings.class));
                                     break;
+            case R.id.nav_logout:   startActivity(new Intent(this,WelcomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    break;
         }
-
         return false;
     }
 }

@@ -99,7 +99,7 @@ public class NewAccount extends BaseActivity
         String name=name_et.getText().toString();
 
         if(name.equals(""))
-            name_et.setError("Mandatory");
+            name_et.setError("Required");
         else
         {
             db=new DatabaseHelper(this,spinner.getSelectedItem().toString(),acc_features.length, acc_features);

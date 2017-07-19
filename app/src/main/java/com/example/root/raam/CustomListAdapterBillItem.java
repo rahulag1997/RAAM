@@ -78,11 +78,11 @@ class CustomListAdapterBillItem extends BaseAdapter
         TextView rate_tv=(TextView)convertView.findViewById(R.id.rate_tv);
         TextView amt_tv=(TextView)convertView.findViewById(R.id.amt_tv);
         sno_tv.setText(Integer.toString(position+1));
-        name_tv.setText(bill_item.name);
+        name_tv.setText(bill_item.stk_grp+" "+bill_item.stk_item);
         qty_tv.setText(bill_item.quantity);
         unit_tv.setText(bill_item.unit);
         rate_tv.setText(bill_item.rate);
-        amt_tv.setText(bill_item.amount);
+        amt_tv.setText(Integer.parseInt(bill_item.quantity)*Integer.parseInt(bill_item.rate));
         convertView.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -159,12 +159,12 @@ class CustomListAdapterBillItem extends BaseAdapter
                                 boolean error=false;
                                 if(quantity.equals(""))
                                 {
-                                    quantity_et.setError("Mandatory");
+                                    quantity_et.setError("Required");
                                     error=true;
                                 }
                                 if(rate.equals(""))
                                 {
-                                    rate_et.setError("Mandatory");
+                                    rate_et.setError("Required");
                                     error=true;
                                 }
 
