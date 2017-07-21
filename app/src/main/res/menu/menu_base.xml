@@ -5,37 +5,37 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/home" />
+            android:title="@string/Home" />
 
         <item
             android:id="@+id/nav_bs"
             android:icon="@drawable/ic_poll_black_24dp"
-            android:title="@string/balance_sheet" />
+            android:title="@string/Balance_Sheet" />
         <item
             android:id="@+id/nav_stock"
             android:icon="@drawable/ic_local_grocery_store_black_24dp"
-            android:title="@string/stock" />
+            android:title="@string/Stock" />
 
         <item
             android:id="@+id/nav_bill"
             android:icon="@drawable/ic_add_black_24dp"
-            android:title="@string/new_bill" />
+            android:title="@string/New_Bill" />
         <item
             android:id="@+id/nav_receipt"
             android:icon="@drawable/ic_add_black_24dp"
-            android:title="@string/new_receipt" />
+            android:title="@string/New_Receipt" />
         <item
             android:id="@+id/nav_expense"
             android:icon="@drawable/ic_add_black_24dp"
-            android:title="@string/new_expense" />
+            android:title="@string/New_Expense" />
         <item
             android:id="@+id/nav_purchase"
             android:icon="@drawable/ic_add_black_24dp"
-            android:title="@string/new_purchase" />
+            android:title="@string/New_Purchase" />
         <item
             android:id="@+id/nav_payment"
             android:icon="@drawable/ic_add_black_24dp"
-            android:title="@string/new_payment" />
+            android:title="@string/New_Payment" />
 
         <item
             android:id="@+id/nav_settings"

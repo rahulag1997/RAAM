@@ -35,19 +35,20 @@ public class NewPayment extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_payment);
-        getSupportActionBar().setTitle("Payment");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(R.string.Payment);
         showFAB();
-        String[] acc_features = getResources().getStringArray(R.array.acc_features);
-        acc_view_features=getResources().getStringArray(R.array.acc_view_features);
+        String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
+        acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
 
 
-        db_acc_creditor=new DatabaseHelper(this,"Creditor", acc_features.length, acc_features);
+        db_acc_creditor=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor), acc_features.length, acc_features);
         getData(db_acc_creditor);
         boundary=names.size();
-        db_acc_bank=new DatabaseHelper(this,"Bank", acc_features.length, acc_features);
+        db_acc_bank=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Bank), acc_features.length, acc_features);
         getData(db_acc_bank);
 
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
 
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
@@ -119,7 +120,7 @@ public class NewPayment extends BaseActivity
         boolean showDialog=true;
         if(date.equals(""))
         {
-            dateET.setError("Required");
+            dateET.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(!(names.contains(name)))
@@ -129,7 +130,7 @@ public class NewPayment extends BaseActivity
         }
         if(amount.equals(""))
         {
-            amtET.setError("Required");
+            amtET.setError(getString(R.string.Required));
             showDialog = false;
         }
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
@@ -139,7 +140,7 @@ public class NewPayment extends BaseActivity
         builder.setView(customDialogView);
 
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -147,16 +148,16 @@ public class NewPayment extends BaseActivity
                 dialog.dismiss();
                 if(cb.isChecked())
                 {
-                    Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                     editor=sharedPreferences.edit();
-                    editor.putBoolean("SHOW_DIALOG",false);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
 
                 }
                 addNewPayment(date,name,amount,extraNote);
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -164,7 +165,7 @@ public class NewPayment extends BaseActivity
         });
         if(showDialog)
         {
-            if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+            if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else
                 addNewPayment(date,name,amount,extraNote);
@@ -174,51 +175,71 @@ public class NewPayment extends BaseActivity
     private void addNewPayment(String date,String name,String amount,String extraNote)
     {
         boolean isBank=names.indexOf(name)>boundary-1;
-        DatabaseHelper db=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-
-        Cursor c_acc;
+        DatabaseHelper db;
         if(isBank)
-            c_acc=db_acc_bank.getData();
-        else
-            c_acc=db_acc_creditor.getData();
-        while (c_acc.moveToNext())
         {
-            if(c_acc.getString(1).equals(name))
-                break;
-        }
-        int balance=Integer.parseInt(c_acc.getString(4));
-        int debit=Integer.parseInt(c_acc.getString(2));
+            Cursor c_acc=db_acc_bank.getData();
+            if(c_acc.getCount()!=0)
+            {
+                while (c_acc.moveToNext())
+                {
+                    if (name.equals(c_acc.getString(1)))
+                        break;
+                }
+                String two=c_acc.getString(2);
+                int credit=Integer.parseInt(c_acc.getString(3));
+                int balance=Integer.parseInt(c_acc.getString(4));
+                String five=c_acc.getString(5);
 
-        //update acc list
-        balance=balance-Integer.parseInt(amount);
-        debit=debit+Integer.parseInt(amount);
-        updateACC(name,Integer.toString(debit),c_acc.getString(3),Integer.toString(balance),c_acc.getString(5),isBank);
+                //update acc list
+                balance=balance+Integer.parseInt(amount);
+                credit+=credit+Integer.parseInt(amount);
+                db_acc_bank.updateData(new String[] {name,two,Integer.toString(credit),Integer.toString(balance),five});
+            }
+            db=new DatabaseHelper(this,getString(R.string.Bank)+"_"+name,acc_view_features.length,acc_view_features);
+        }
+        else
+        {
+            Cursor c_acc=db_acc_creditor.getData();
+            if(c_acc.getCount()!=0)
+            {
+                while (c_acc.moveToNext())
+                {
+                    if(name.equals(c_acc.getString(1)))
+                        break;
+                }
+            }
+            int debit=Integer.parseInt(c_acc.getString(2));
+            String three=c_acc.getString(3);
+            int balance=Integer.parseInt(c_acc.getString(4));
+            String five=c_acc.getString(5);
+
+            //update acc list
+            balance=balance-Integer.parseInt(amount);
+            debit=debit+Integer.parseInt(amount);
+            db_acc_creditor.updateData(new String[] {name,Integer.toString(debit),three,Integer.toString(balance),five});
+            db=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
+        }
+
 
         //insert in party account
-        db.insertData(new String[] {"Payment on "+date,amount,extraNote,"Payment",date});
+        db.insertData(new String[] {"Payment on "+date,amount,extraNote,getString(R.string.Payment),date});
 
         //insert into cash acc
-        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,"Payment",date});
+        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
+        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,getString(R.string.Payment),date});
 
         //update cash
-        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
+        int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
-        editor.putInt("CASH_IN_HAND",updatedCash);
+        editor.putInt(getString(R.string.CASH_IN_HAND),updatedCash);
         editor.apply();
 
 
         Toast.makeText(getApplicationContext(),"Payment Added",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewPayment.class));
         finish();
     }
 
-    private void updateACC(String name, String debit,String credit,String balance,String type,boolean isBank)
-    {
-        if(isBank)
-            db_acc_bank.updateData(new String[] {name,debit,credit,balance,type});
-        else
-            db_acc_creditor.updateData(new String[] {name,debit,credit,balance,type});
-    }
 }

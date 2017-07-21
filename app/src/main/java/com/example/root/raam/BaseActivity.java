@@ -3,26 +3,21 @@ package com.example.root.raam;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-public class BaseActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener
+public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private NavigationView navigationView;
     private DrawerLayout fullLayout;
     private Toolbar toolbar;
-    private ActionBarDrawerToggle drawerToggle;
 
     @Override
     public void setContentView(@LayoutRes int layoutResID)
@@ -67,7 +62,7 @@ public class BaseActivity extends AppCompatActivity implements
 
         if( useDrawerToggle())
         { // use the hamburger menu
-            drawerToggle = new ActionBarDrawerToggle(this, fullLayout, toolbar,
+            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, fullLayout, toolbar,
                     R.string.nav_drawer_opened,
                     R.string.nav_drawer_closed);
 
@@ -88,7 +83,7 @@ public class BaseActivity extends AppCompatActivity implements
 
         switch (item.getItemId())
         {
-            case R.id.nav_home:     startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            case R.id.nav_home:     startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     break;
             case R.id.nav_receipt:  startActivity(new Intent(this,NewReceipt.class));
                                     break;
@@ -106,7 +101,7 @@ public class BaseActivity extends AppCompatActivity implements
                                     break;
             case R.id.nav_settings: startActivity(new Intent(this,Settings.class));
                                     break;
-            case R.id.nav_logout:   startActivity(new Intent(this,WelcomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            case R.id.nav_logout:   startActivity(new Intent(this,WelcomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                                     break;
         }
         return false;

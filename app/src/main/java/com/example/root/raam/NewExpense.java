@@ -27,8 +27,9 @@ public class NewExpense extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_expense);
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        getSupportActionBar().setTitle("Expense");
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Expense));
         showFAB();
     }
 
@@ -83,12 +84,12 @@ public class NewExpense extends BaseActivity
         final String amount=(amtET.getText()).toString();
         boolean showDialog=true;
         if(date.equals("")) {
-            dateET.setError("Required");
+            dateET.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(amount.equals(""))
         {
-            amtET.setError("Required");
+            amtET.setError(getString(R.string.Required));
             showDialog = false;
         }
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
@@ -98,23 +99,23 @@ public class NewExpense extends BaseActivity
         builder.setView(customDialogView);
 
         final String finalDetails = details;
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 dialog.dismiss();
                 if(cb.isChecked())
                 {
-                    Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                     editor=sharedPreferences.edit();
-                    editor.putBoolean("SHOW_DIALOG",false);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
 
                 }
                 addNewExpense(date,amount, finalDetails);
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -122,7 +123,7 @@ public class NewExpense extends BaseActivity
         });
         if(showDialog)
         {
-            if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+            if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else {
                 addNewExpense(date,amount,details);
@@ -133,30 +134,30 @@ public class NewExpense extends BaseActivity
 
     private void addNewExpense(String date,String amount,String details)
     {
-        String[] acc_view_features=getResources().getStringArray(R.array.acc_view_features);
+        String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
 
         //insert in cash account
-        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
+        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
         db_cashInHand.insertData(new String[] {details+" "+date,amount,details,"Expense",date});
 
         //update cash balance
-        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)-Integer.parseInt(amount);
+        int updatedCash=sharedPreferences.getInt("CASH IN HAND",0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
-        editor.putInt("CASH_IN_HAND",updatedCash);
+        editor.putInt("CASH IN HAND",updatedCash);
         editor.apply();
 
         //insert in expense account
-        DatabaseHelper db_exp=new DatabaseHelper(this,getString(R.string.exp),acc_view_features.length,acc_view_features);
+        DatabaseHelper db_exp=new DatabaseHelper(this,getString(R.string.Expense)+"_"+getString(R.string.EXP),acc_view_features.length,acc_view_features);
         db_exp.insertData(new String[] {details,amount,details,"Expense",date});
 
         //update expense balance
-        int updatedExp=sharedPreferences.getInt("EXP",0)+Integer.parseInt(amount);
+        int updatedExp=sharedPreferences.getInt(getString(R.string.EXP),0)+Integer.parseInt(amount);
         editor=sharedPreferences.edit();
-        editor.putInt("EXP",updatedExp);
+        editor.putInt(getString(R.string.EXP),updatedExp);
         editor.apply();
 
         Toast.makeText(getApplicationContext(),"Expense Added",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewExpense.class));
         finish();
     }

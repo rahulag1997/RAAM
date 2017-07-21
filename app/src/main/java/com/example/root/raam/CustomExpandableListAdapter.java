@@ -2,8 +2,6 @@ package com.example.root.raam;
 
 
 import android.app.Activity;
-import android.content.Intent;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +9,14 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class CustomExpandableListAdapter extends BaseExpandableListAdapter
+class CustomExpandableListAdapter extends BaseExpandableListAdapter
 {
     private final SparseArray<Stock_group> stock_groups;
-    public LayoutInflater inflater;
-    public Activity activity;
+    private LayoutInflater inflater;
+    private Activity activity;
 
-    public CustomExpandableListAdapter(Activity act, SparseArray<Stock_group> stock_groups)
+    CustomExpandableListAdapter(Activity act, SparseArray<Stock_group> stock_groups)
     {
         activity = act;
         this.stock_groups = stock_groups;
@@ -43,7 +40,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter
                              boolean isLastChild, View convertView, ViewGroup parent)
     {
         final DATA_ITEM children = (DATA_ITEM) getChild(groupPosition, childPosition);
-        if (convertView == null) {
+        if (convertView == null)
+        {
             convertView = inflater.inflate(R.layout.data_item, null);
         }
         TextView name_tv = (TextView) convertView.findViewById(R.id.data_name);
@@ -54,19 +52,24 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter
         dr_tv.setText(children.dr);
         cr_tv.setText(children.cr);
         bal_tv.setText(children.bal);
-        convertView.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
+                //TODO open stock View
+                /*
                 Intent i=new Intent(activity,StockView.class);
                 i.putExtra("Name",children.name);
-                (activity).startActivity(i);
+                (activity).startActivity(i);*/
             }
         });
         return convertView;
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
+    public int getChildrenCount(int groupPosition)
+    {
         return stock_groups.get(groupPosition).children.size();
     }
 
@@ -95,9 +98,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
-        if (convertView == null) {
+    public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
             convertView = inflater.inflate(R.layout.stock_group, null);
         }
         Stock_group group = (Stock_group) getGroup(groupPosition);

@@ -19,9 +19,7 @@ public class WelcomeActivity extends AppCompatActivity {
         startActivity(new Intent(this,LoginActivity.class));
     }
 
-    public void create(View view)
-    {
-    }
+    public void create(View view) { startActivity(new Intent(this,NewCompany.class)); }
 
     public void exit(View view)
     {

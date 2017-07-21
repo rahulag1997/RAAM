@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class SundryDebtors extends BaseActivity
 {
-    private String[] acc_features;
     DatabaseHelper db;
     ArrayList<DATA_ITEM> data=new ArrayList<>();
     CustomListAdapter adapter;
@@ -21,10 +20,11 @@ public class SundryDebtors extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sundry_debtors);
-        getSupportActionBar().setTitle("Sundry Debtors");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Sundry_Debtors));
         showFAB();
-        acc_features=getResources().getStringArray(R.array.acc_features);
-        db=new DatabaseHelper(this,"Debtor",acc_features.length,acc_features);
+        String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
+        db=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Debtor), acc_features.length, acc_features);
 
         ListView list = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, data,"Debtor");

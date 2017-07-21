@@ -22,9 +22,9 @@ public class StockView extends BaseActivity
         String name=getIntent().getStringExtra("Name");
         getSupportActionBar().setTitle(name);
         showFAB();
-        ((TextView)findViewById(R.id.data_name)).setText(R.string.particulars);
-        ((TextView)findViewById(R.id.data_dr)).setText(R.string.sale);
-        ((TextView)findViewById(R.id.data_cr)).setText(R.string.purchase);
+        ((TextView)findViewById(R.id.data_name)).setText(R.string.Particulars);
+        ((TextView)findViewById(R.id.data_dr)).setText(R.string.Sale);
+        ((TextView)findViewById(R.id.data_cr)).setText(R.string.Purchase);
 
         fillData();
         ListView list = (ListView) findViewById(R.id.list_particulars);

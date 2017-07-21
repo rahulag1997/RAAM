@@ -2,59 +2,92 @@
     <string name="app_name">RAAM</string>
     <string name="nav_drawer_opened">drawer opened</string>
     <string name="nav_drawer_closed">drawer closed</string>
-    <string name="accounts">Accounts</string>
-    <string name="balance_sheet">Balance Sheet</string>
-    <string name="stock">Stock</string>
-    <string name="bank_acc">Bank Acc</string>
-    <string name="cash_acc">Cash Acc</string>
-    <string name="expense_acc">Expense Acc</string>
-    <string name="sales_acc">Sales Acc</string>
-    <string name="sundry_creditors">Sundry Creditors</string>
-    <string name="sundry_debttors">Sundry Debttors</string>
-    <string name="date">Date</string>
-    <string name="click_to_set_date">Click to set Date</string>
-    <string name="name">Name</string>
-    <string name="submit">Submit</string>
-    <string name="additional_notes">Additional Notes</string>
-    <string name="amount">Amount</string>
-    <string name="new_bill">New Bill</string>
-    <string name="new_receipt">New Receipt</string>
-    <string name="new_expense">New Expense</string>
-    <string name="new_purchase">New Purchase</string>
-    <string name="new_payment">New Payment</string>
-    <string name="expense_details">Expense Details</string>
-    <string name="title_activity_tp">tp</string>
-    <string name="home">Home</string>
-    <string name="s_no">S.No.</string>
-    <string name="item">Item</string>
-    <string name="qty">Qty</string>
-    <string name="unit">Unit</string>
-    <string name="rate">Rate</string>
-    <string name="add_item">+ Add Item</string>
-    <string name="enter_name">Enter Name</string>
-    <string name="item_name">Item Name</string>
-    <string name="debit">Debit</string>
-    <string name="credit">Credit</string>
-    <string name="balance">Balance</string>
-    <string name="test">Test</string>
-    <string name="particulars">Particulars</string>
-    <string name="sale">Sale</string>
-    <string name="purchase">Purchase</string>
-    <string name="don_t_ask_for_confirmation_again">Don\'t ask for confirmation again</string>
-    <string name="quantity">Quantity</string>
-    <string name="acc_list">Account_List</string>
-    <string name="acc_details">Account_Details</string>
-    <string name="ob">Opening Balance</string>
-    <string name="cash_in_hand">Cash in Hand</string>
-    <string name="name_party">Name_Party</string>
-    <string name="bill_no">Bill No.</string>
-    <string name="exp">EXP</string>
-    <string name="sales">SALES</string>
-    <string-array name="units">
+    <string name="Accounts">Accounts</string>
+    <string name="Account">Account</string>
+    <string name="Balance_Sheet">Balance Sheet</string>
+    <string name="Stock">Stock</string>
+    <string name="Bank_Acc">Bank Acc</string>
+    <string name="Cash_Acc">Cash Acc</string>
+    <string name="Expense_Acc">Expense Acc</string>
+    <string name="Sales_Acc">Sales Acc</string>
+    <string name="Sundry_Creditors">Sundry Creditors</string>
+    <string name="Creditor">Creditor</string>
+    <string name="Sundry_Debtors">Sundry Debtors</string>
+    <string name="Debtor">Debtor</string>
+    <string name="Date">Date</string>
+    <string name="Set_Date">Click to set Date</string>
+    <string name="Name">Name</string>
+    <string name="Submit">Submit</string>
+    <string name="Additional_Notes">Additional Notes</string>
+    <string name="Amount">Amount</string>
+    <string name="New_Bill">New Bill</string>
+    <string name="New_Receipt">New Receipt</string>
+    <string name="New_Expense">New Expense</string>
+    <string name="New_Purchase">New Purchase</string>
+    <string name="New_Payment">New Payment</string>
+    <string name="Expense_Details">Expense Details</string>
+    <string name="Home">Home</string>
+    <string name="S_No">S.No.</string>
+    <string name="Item">Item</string>
+    <string name="Qty">Qty</string>
+    <string name="Unit">Unit</string>
+    <string name="Rate">Rate</string>
+    <string name="Add_Item">+ Add Item</string>
+    <string name="Enter_Name">Enter Name</string>
+    <string name="Item_Name">Item Name</string>
+    <string name="Debit">Debit</string>
+    <string name="Credit">Credit</string>
+    <string name="Balance">Balance</string>
+    <string name="Particulars">Particulars</string>
+    <string name="Sale">Sale</string>
+    <string name="Purchase">Purchase</string>
+    <string name="Payment">Payment</string>
+    <string name="Confirmation">Don\'t ask for confirmation again</string>
+    <string name="Quantity">Quantity</string>
+    <string name="Qcc_list">Account_List</string>
+    <string name="Account_Details">Account_Details</string>
+    <string name="Opening_Balance">Opening Balance</string>
+    <string name="OB">OB</string>
+    <string name="Cash_in_Hand">Cash in Hand</string>
+    <string name="CASH_IN_HAND">CASH_IN_HAND</string>
+    <string name="Name_Party">Name_Party</string>
+    <string name="Bill_No">Bill No.</string>
+    <string name="EXP">EXP</string>
+    <string name="SALES">SALES</string>
+    <string name="Test">Test</string>
+    <string name="ACC_TYPE">ACC TYPE</string>
+    <string name="Cash">Cash</string>
+    <string name="Expense">Expense</string>
+    <string name="Sales">Sales</string>
+    <string name="Error_Feature_Mismatch">Error in matching the account feature</string>
+    <string name="Error_Account_Mismatch">Error in matching acc type</string>
+    <string name="Account_Bank">Account_Bank</string>
+    <string name="Bank">Bank</string>
+    <string name="MyPrefs">MyPrefs</string>
+    <string name="New_Account">New Account</string>
+    <string name="Confirmation_Disabled">Confirmation Dialog Disabled</string>
+    <string name="SHOW_DIALOG">SHOW_DIALOG</string>
+    <string name="Confirm">Confirm?</string>
+    <string name="Required">Required</string>
+    <string name="No">No</string>
+    <string name="Yes">Yes</string>
+    <string name="SHOW_AGAIN">SHOW_AGAIN</string>
+    <string name="Exists">Already Exists</string>
+    <string name="CASH_CREATED">CASH_CREATED</string>
+    <string name="SALES_CREATED">SALES_CREATED</string>
+    <string name="EXP_CREATED">EXP_CREATED</string>
+    <string name="Company_List">Company_List</string>
+    <string name="SGL">StockGroupList</string>
+    <string name="StockGroup">StockGroup</string>
+    <string name="OD">Opening Day</string>
+    <string name="Bill">Bill</string>
+    <string name="Receipt">Receipt</string>
+    <string name="SG">StockGroup</string>
+    <string-array name="Units">
         <item>Dz</item>
         <item>Pcs</item>
     </string-array>
-    <string-array name="acc_types">
+    <string-array name="Acc_Types">
         <item>Bank</item>
         <item>Cash</item>
         <item>Sales</item>
@@ -62,26 +95,39 @@
         <item>Creditor</item>
         <item>Debtor</item>
     </string-array>
-    <string-array name="acc_features">
+    <string-array name="Acc_Features">
         <item>Name</item>
         <item>Debit</item>
         <item>Credit</item>
         <item>Balance</item>
         <item>Type</item>
     </string-array>
-    <string-array name="acc_view_features">
+    <string-array name="Acc_View_Features">
         <item>Particulars</item>
         <item>Amount</item>
         <item>ExtraNote</item>
         <item>Type</item>
         <item>Date</item>
     </string-array>
-    <string-array name="voture_type">
+    <string-array name="Voture_Types">
         <item>Bill</item>
         <item>Expense</item>
         <item>Payment</item>
         <item>Purchase</item>
         <item>Receipt</item>
         <item>OB</item>
+    </string-array>
+    <string-array name="StockGroupListFeatures">
+        <item>Name</item>
+        <!--<item>Unit</item> !-->
+    </string-array>
+    <string-array name="StockGroup_Features">
+        <item>Name</item>
+        <item>Quantity</item>
+        <item>Rate</item>
+    </string-array>
+    <string-array name="Company_Fields">
+        <item>Name</item>
+        <item>Password</item>
     </string-array>
 </resources>

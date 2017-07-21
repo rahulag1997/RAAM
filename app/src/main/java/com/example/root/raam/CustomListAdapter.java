@@ -1,30 +1,21 @@
 package com.example.root.raam;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
-
-
-public class CustomListAdapter extends BaseAdapter
+class CustomListAdapter extends BaseAdapter
 {
     private ArrayList<DATA_ITEM> data;
-    LayoutInflater layoutInflater;
+    private LayoutInflater layoutInflater;
     private String acc_type;
     Context context;
-    public CustomListAdapter( Context context, ArrayList<DATA_ITEM> data,String type)
+    CustomListAdapter(Context context, ArrayList<DATA_ITEM> data,String type)
     {
         this.context=context;
         this.data=data;
@@ -70,8 +61,8 @@ public class CustomListAdapter extends BaseAdapter
             public void onClick(View v)
             {
                 Intent i=new Intent(context,AccountView.class);
-                i.putExtra("Name",name_tv.getText());
-                i.putExtra("ACC_TYPE",acc_type);
+                i.putExtra(context.getString(R.string.Name),name_tv.getText());
+                i.putExtra(context.getString(R.string.ACC_TYPE),acc_type);
                 (context).startActivity(i);
             }
         });

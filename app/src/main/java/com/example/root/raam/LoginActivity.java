@@ -13,10 +13,9 @@ import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity
 {
-    String[] company_fields ={"Name","Password"};
+    String[] company_fields;
 
-    ArrayList<String> names;
-    ArrayList<String> pass;
+    ArrayList<String> names, pass;
     ArrayAdapter<String> adapter;
     DatabaseHelper db;
     AutoCompleteTextView name_actv;
@@ -27,7 +26,12 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        DatabaseHelper db=new DatabaseHelper(this,"Company_List", company_fields.length, company_fields);
+        company_fields=this.getResources().getStringArray(R.array.Company_Fields);
+
+        names=new ArrayList<>();
+        pass=new ArrayList<>();
+
+        db=new DatabaseHelper(this,getString(R.string.Company_List), company_fields.length, company_fields);
 
         adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
 
@@ -44,7 +48,7 @@ public class LoginActivity extends AppCompatActivity
         {
             if(pass.get(names.indexOf(companyName)).equals(password))
             {
-                startActivity(new Intent(this,MainActivity.class).putExtra("COMPANY",companyName).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("COMPANY",companyName));
             }
             else
             {
@@ -78,6 +82,4 @@ public class LoginActivity extends AppCompatActivity
             pass.add(c.getString(2));
         }
     }
-
-
 }

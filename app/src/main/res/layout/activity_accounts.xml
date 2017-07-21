@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,7 +11,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/bank_acc"
+        android:text="@string/Bank_Acc"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_bank"
         android:onClick="openBank"
@@ -22,7 +22,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/cash_acc"
+        android:text="@string/Cash_Acc"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_cash"
         android:onClick="openCash"
@@ -33,7 +33,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/expense_acc"
+        android:text="@string/Expense_Acc"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_expense"
         android:onClick="openExpense"
@@ -44,7 +44,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sales_acc"
+        android:text="@string/Sales_Acc"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_sales"
         android:onClick="openSales"
@@ -55,7 +55,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sundry_creditors"
+        android:text="@string/Sundry_Creditors"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_sc"
         android:onClick="openSC"
@@ -66,7 +66,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sundry_debttors"
+        android:text="@string/Sundry_Debtors"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:id="@+id/button_sd"
         android:onClick="openSD"

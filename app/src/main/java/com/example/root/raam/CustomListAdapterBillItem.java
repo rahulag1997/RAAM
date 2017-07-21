@@ -3,6 +3,7 @@ package com.example.root.raam;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,21 +15,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
-
 
 class CustomListAdapterBillItem extends BaseAdapter
 {
-    private String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};
-    private String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};
+    private ArrayList<String> stockGroups,stocks;
     private String[] units={"Dz","Pcs"};
     private ArrayList<BILL_ITEM> data;
     private LayoutInflater layoutInflater;
     Context context;
     private int change=0;
     private updateTotal myUpdater;
+    private String[] stockGroupListFeatures,stockGroupFeatures;
 
     interface updateTotal
     {
@@ -41,7 +39,26 @@ class CustomListAdapterBillItem extends BaseAdapter
         this.context=context;
         this.data=data;
         layoutInflater = LayoutInflater.from(context);
+        stockGroups=new ArrayList<>();
+        stocks=new ArrayList<>();
+        stockGroupListFeatures=context.getResources().getStringArray(R.array.StockGroupListFeatures);
+        stockGroupFeatures=context.getResources().getStringArray(R.array.StockGroup_Features);
+        getData();
     }
+
+    private void getData()
+    {
+        DatabaseHelper db=new DatabaseHelper(context,context.getString(R.string.SGL),stockGroupListFeatures.length,stockGroupListFeatures);
+        Cursor c=db.getData();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+            {
+                stockGroups.add(c.getString(1));
+            }
+        }
+    }
+
     void addItem(BILL_ITEM item)
     {
         data.add(item);
@@ -93,12 +110,12 @@ class CustomListAdapterBillItem extends BaseAdapter
                 View new_item=View.inflate(context,R.layout.new_item,null);
 
                 final Spinner stk_grp_spinner=(Spinner)new_item.findViewById(R.id.stock_group_spinner);
-                ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,testStock);
+                ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,stockGroups);
                 stk_grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 stk_grp_spinner.setAdapter(stk_grp_adapter);
 
                 final Spinner stk_item_spinner=(Spinner)new_item.findViewById(R.id.stock_spinner);
-                final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,testStock_list);
+                final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,stocks);
                 stk_item_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 stk_item_spinner.setAdapter(stk_item_adapter);
 
@@ -107,7 +124,15 @@ class CustomListAdapterBillItem extends BaseAdapter
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
-                        testStock_list[position]=testStock[position];
+                        DatabaseHelper db_stkGrp=new DatabaseHelper(context,context.getString(R.string.StockGroup)+"_"+stockGroups.get(position),stockGroupFeatures.length,stockGroupFeatures);
+                        Cursor c=db_stkGrp.getData();
+                        if(c.getCount()!=0)
+                        {
+                            while (c.moveToNext())
+                            {
+                                stocks.add(c.getString(1));
+                            }
+                        }
                         stk_item_adapter.notifyDataSetChanged();
                     }
 
@@ -135,7 +160,6 @@ class CustomListAdapterBillItem extends BaseAdapter
 
                 change=Integer.parseInt(selected_item.quantity)*Integer.parseInt(selected_item.rate);
 
-
                 final AlertDialog.Builder builder=new AlertDialog.Builder(context);
                 builder.setTitle("Edit Item");
                 builder.setView(new_item);
@@ -159,12 +183,12 @@ class CustomListAdapterBillItem extends BaseAdapter
                                 boolean error=false;
                                 if(quantity.equals(""))
                                 {
-                                    quantity_et.setError("Required");
+                                    quantity_et.setError(context.getString(R.string.Required));
                                     error=true;
                                 }
                                 if(rate.equals(""))
                                 {
-                                    rate_et.setError("Required");
+                                    rate_et.setError(context.getString(R.string.Required));
                                     error=true;
                                 }
 
@@ -187,11 +211,8 @@ class CustomListAdapterBillItem extends BaseAdapter
                                 notifyDataSetChanged();
                                 myUpdater.onProcessFilter(change);
                                 a_dialog.dismiss();
-
                             }
                         });
-
-
                     }
                 });
                 a_dialog.show();

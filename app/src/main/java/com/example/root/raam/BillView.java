@@ -22,16 +22,17 @@ public class BillView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_view);
-        getSupportActionBar().setTitle(R.string.bill_no);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(R.string.Bill_No);
         showFab();
 
         View name_line=findViewById(R.id.name_line);
-        ((TextView)name_line.findViewById(R.id.type_tv)).setText(getString(R.string.name));
-        ((TextView)name_line.findViewById(R.id.value_tv)).setText(R.string.name_party);
+        ((TextView)name_line.findViewById(R.id.type_tv)).setText(getString(R.string.Name));
+        ((TextView)name_line.findViewById(R.id.value_tv)).setText(R.string.Name_Party);
 
         View date_line=findViewById(R.id.date_line);
-        ((TextView)date_line.findViewById(R.id.type_tv)).setText(getString(R.string.date));
-        ((TextView)date_line.findViewById(R.id.value_tv)).setText(getString(R.string.date));
+        ((TextView)date_line.findViewById(R.id.type_tv)).setText(getString(R.string.Date));
+        ((TextView)date_line.findViewById(R.id.value_tv)).setText(getString(R.string.Date));
 
         ListView list=(ListView)findViewById(R.id.item_list);
        // c_adapter= new CustomListAdapterBillItem(this,data);

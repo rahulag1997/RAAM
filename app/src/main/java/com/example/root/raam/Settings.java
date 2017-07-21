@@ -17,23 +17,23 @@ public class Settings extends BaseActivity {
         getSupportActionBar().setTitle("Settings");
         showFAB();
 
-        SharedPreferences sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor=sharedPreferences.edit();
 
         CheckBox confirm=(CheckBox)findViewById(R.id.confirm_check);
-        confirm.setChecked(sharedPreferences.getBoolean("SHOW_DIALOG",true));
+        confirm.setChecked(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true));
 
         confirm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                    editor.putBoolean("SHOW_DIALOG",isChecked);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),isChecked);
                     editor.apply();
             }
         });
 
         CheckBox repeat=(CheckBox)findViewById(R.id.redirect_check);
-        repeat.setChecked(sharedPreferences.getBoolean("SHOW_AGAIN",true));
+        repeat.setChecked(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true));
         repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -42,7 +42,7 @@ public class Settings extends BaseActivity {
                 else
                     ((TextView)findViewById(R.id.guide_tv)).setText("Will go Back on submission of a Form");
 
-                editor.putBoolean("SHOW_AGAIN",isChecked);
+                editor.putBoolean(getString(R.string.SHOW_AGAIN),isChecked);
                 editor.apply();
             }
         });

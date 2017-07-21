@@ -9,15 +9,15 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:padding="10dp"
-        android:text="@string/name"/>
+        android:text="@string/Name"/>
 
     <EditText
         android:layout_width="match_parent"
         android:id="@+id/name_et"
         android:layout_height="match_parent"
-        android:hint="@string/name"
+        android:hint="@string/Name"
         android:maxLines="1"
-        android:padding="10dp"
-        android:singleLine="true" />
+        android:padding="10dp" />
+    <!--TODO android:singleLine="true"!-->
 
 </LinearLayout>

@@ -3,36 +3,33 @@ package com.example.root.raam;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
 public class BankACC extends BaseActivity
 {
-    private String[] acc_features;
     DatabaseHelper db;
-    ArrayList<DATA_ITEM> data=new ArrayList<>();
+    ArrayList<DATA_ITEM> data;
     CustomListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bank_acc);
-        getSupportActionBar().setTitle("Bank Acc");
-        showFAB();
-        acc_features=this.getResources().getStringArray(R.array.acc_features);
 
-        db=new DatabaseHelper(this,"Bank",acc_features.length,acc_features);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Bank_Acc));
+
+        showFAB();
+
+        data=new ArrayList<>();
+        String[] acc_features = this.getResources().getStringArray(R.array.Acc_Features);
+        db=new DatabaseHelper(this,getString(R.string.Account_Bank), acc_features.length, acc_features);
         ListView list = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(this, data,"Bank");
+        adapter = new CustomListAdapter(this, data,getString(R.string.Bank));
         list.setAdapter(adapter);
     }
 
@@ -58,7 +55,7 @@ public class BankACC extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",0));
+                startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra(getString(R.string.ACC_TYPE),0));
             }
         });
     }
@@ -71,5 +68,4 @@ public class BankACC extends BaseActivity
         getData();
         adapter.notifyDataSetChanged();
     }
-
 }

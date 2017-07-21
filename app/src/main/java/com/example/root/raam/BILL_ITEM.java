@@ -1,12 +1,13 @@
 package com.example.root.raam;
 
-public class BILL_ITEM
+class BILL_ITEM
 {
-    public String stk_grp;
-    public String stk_item;
-    public String quantity;
-    public String unit;
-    public String rate;
+    String stk_grp;
+    String stk_item;
+    String quantity;
+    String unit;
+    String rate;
+
     BILL_ITEM(String stk_grp,String stk_item,String quantity,String unit,String rate)
     {
         this.stk_grp=stk_grp;

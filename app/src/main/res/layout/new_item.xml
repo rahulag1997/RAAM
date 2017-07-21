@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -16,6 +17,7 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:text="Stock Group"/>
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,6 +37,7 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:text="Stock"/>
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -55,7 +58,7 @@
             android:padding="10dp"
             android:textAlignment="viewStart"
             android:gravity="start"
-            android:text="@string/quantity"/>
+            android:text="@string/Quantity"/>
 
         <EditText
             android:id="@+id/quantity_et"
@@ -63,7 +66,7 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:gravity="start"
-            android:hint="@string/quantity"
+            android:hint="@string/Quantity"
             android:inputType="number"
             android:textAlignment="viewStart" />
 
@@ -81,11 +84,12 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:text="Unit"/>
+
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/unit_spinner"
-            tools:entries="@array/units">
+            tools:entries="@array/Units">
         </Spinner>
 
     </LinearLayout>
@@ -102,7 +106,7 @@
             android:padding="10dp"
             android:textAlignment="viewStart"
             android:gravity="start"
-            android:text="@string/rate"/>
+            android:text="@string/Rate"/>
 
         <EditText
             android:id="@+id/rate_et"
@@ -110,7 +114,7 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:gravity="start"
-            android:hint="@string/rate"
+            android:hint="@string/Rate"
             android:inputType="number"
             android:textAlignment="viewStart" />
 

@@ -34,18 +34,19 @@ public class NewReceipt extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
         setContentView(R.layout.activity_new_receipt);
-        getSupportActionBar().setTitle("Receipt");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Receipt));
 
         showFAB();
-        String[] acc_features = getResources().getStringArray(R.array.acc_features);
-        acc_view_features=getResources().getStringArray(R.array.acc_view_features);
+        String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
+        acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
 
-        db_acc_debtor=new DatabaseHelper(this,"Debtor", acc_features.length, acc_features);
+        db_acc_debtor=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Debtor), acc_features.length, acc_features);
         getData(db_acc_debtor);
         boundary=names.size();
-        db_acc_bank=new DatabaseHelper(this,"Bank", acc_features.length, acc_features);
+        db_acc_bank=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Bank), acc_features.length, acc_features);
         getData(db_acc_bank);
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
@@ -55,6 +56,7 @@ public class NewReceipt extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 actv.setError(null);
+                Toast.makeText(getApplicationContext(),Integer.toString(position),Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -120,7 +122,7 @@ public class NewReceipt extends BaseActivity
         final String extraNote=((EditText)findViewById(R.id.notesEditText)).getText().toString();
         boolean showDialog=true;
         if(date.equals("")) {
-            dateET.setError("Required");
+            dateET.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(!(names.contains(name)))
@@ -130,7 +132,7 @@ public class NewReceipt extends BaseActivity
         }
         if(amount.equals(""))
         {
-            amtET.setError("Required");
+            amtET.setError(getString(R.string.Required));
             showDialog = false;
         }
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
@@ -140,23 +142,23 @@ public class NewReceipt extends BaseActivity
         builder.setView(customDialogView);
 
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
                 dialog.dismiss();
                 if(cb.isChecked())
                 {
-                    Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                     editor=sharedPreferences.edit();
-                    editor.putBoolean("SHOW_DIALOG",false);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
 
                 }
                 addNewReceipt(date,name,amount,extraNote);
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -164,7 +166,7 @@ public class NewReceipt extends BaseActivity
         });
         if(showDialog)
         {
-            if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+            if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else {
                 addNewReceipt(date,name,amount,extraNote);
@@ -176,42 +178,52 @@ public class NewReceipt extends BaseActivity
     private void addNewReceipt(String date,String name,String amount,String extraNote)
     {
         boolean isBank=names.indexOf(name)>boundary-1;
-        DatabaseHelper db=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
+        DatabaseHelper db;
 
         Cursor c_acc;
         if(isBank)
-            c_acc=db_acc_bank.getData();
-        else
-            c_acc=db_acc_debtor.getData();
-        while (c_acc.moveToNext())
         {
-            if(c_acc.getString(1).equals(name))
-                break;
+            db=new DatabaseHelper(this,getString(R.string.Bank)+"_"+name,acc_view_features.length,acc_view_features);
+            c_acc = db_acc_bank.getData();
         }
-        int balance=Integer.parseInt(c_acc.getString(4));
+        else
+        {
+            db=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
+            c_acc=db_acc_debtor.getData();
+        }
+        if(c_acc.getCount()!=0)
+        {
+            while (c_acc.moveToNext())
+            {
+                if(name.equals(c_acc.getString(1)))
+                    break;
+            }
+        }
         int debit=Integer.parseInt(c_acc.getString(2));
-
+        String three=c_acc.getString(3);
+        int balance=Integer.parseInt(c_acc.getString(4));
+        String five=c_acc.getString(5);
         //update acc list
         balance=balance-Integer.parseInt(amount);
         debit=debit+Integer.parseInt(amount);
-        updateACC(name,Integer.toString(debit),c_acc.getString(3),Integer.toString(balance),c_acc.getString(5),isBank);
+        updateACC(name,Integer.toString(debit),three,Integer.toString(balance),five,isBank);
 
         //insert into party account
-        db.insertData(new String[] {"Payment on "+date,amount,extraNote,"Receipt",date});
+        db.insertData(new String[] {"Payment on "+date,amount,extraNote,getString(R.string.Receipt),date});
 
 
         //insert into cash account
-        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.cash_in_hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,"Receipt",date});
+        DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
+        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,getString(R.string.Receipt),date});
 
         //update cash in hand
-        int updatedCash=sharedPreferences.getInt("CASH_IN_HAND",0)+Integer.parseInt(amount);
+        int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)+Integer.parseInt(amount);
         editor=sharedPreferences.edit();
-        editor.putInt("CASH_IN_HAND",updatedCash);
+        editor.putInt(getString(R.string.CASH_IN_HAND),updatedCash);
         editor.apply();
 
         Toast.makeText(getApplicationContext(),"Receipt Added",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewReceipt.class));
         finish();
     }

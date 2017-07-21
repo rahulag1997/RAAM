@@ -34,4 +34,5 @@
         android:text="Exit"
         android:layout_below="@id/button_create"
         android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>

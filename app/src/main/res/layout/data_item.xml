@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
@@ -19,7 +20,7 @@
         android:layout_marginLeft="20dp"
         android:padding="5dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:text="@string/item_name" />
+        android:text="@string/Item_Name" />
 
     <TextView
         android:layout_weight="4"
@@ -30,7 +31,7 @@
         android:id="@+id/data_dr"
         android:padding="5dp"
         android:textStyle="bold"
-        android:text="@string/debit"/>
+        android:text="@string/Debit"/>
 
     <TextView
         android:layout_weight="4"
@@ -41,7 +42,7 @@
         android:id="@+id/data_cr"
         android:padding="5dp"
         android:textStyle="bold"
-        android:text="@string/credit"/>
+        android:text="@string/Credit"/>
 
     <TextView
         android:layout_weight="4"
@@ -54,6 +55,6 @@
         android:textStyle="bold"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:text="@string/balance"/>
+        android:text="@string/Balance"/>
 
 </LinearLayout>

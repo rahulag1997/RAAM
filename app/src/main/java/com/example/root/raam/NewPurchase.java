@@ -46,13 +46,14 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bill);
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        getSupportActionBar().setTitle("Purchase");
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Purchase));
         showFAB();
-        acc_features = getResources().getStringArray(R.array.acc_features);
-        acc_view_features = getResources().getStringArray(R.array.acc_view_features);
+        acc_features = getResources().getStringArray(R.array.Acc_Features);
+        acc_view_features = getResources().getStringArray(R.array.Acc_View_Features);
 
-        db=new DatabaseHelper(this,"Creditor", acc_features.length, acc_features);
+        db=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor), acc_features.length, acc_features);
         Cursor c=db.getData();
 
         if(c.getCount()!=0)
@@ -176,12 +177,12 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                         boolean error=false;
                         if(quantity.equals(""))
                         {
-                            quantity_et.setError("Required");
+                            quantity_et.setError(getString(R.string.Required));
                             error=true;
                         }
                         if(rate.equals(""))
                         {
-                            rate_et.setError("Required");
+                            rate_et.setError(getString(R.string.Required));
                             error=true;
                         }
 
@@ -212,7 +213,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         boolean showDialog=true;
         if(date.equals(""))
         {
-            dateTV.setError("Required");
+            dateTV.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(!(names.contains(name)))
@@ -230,7 +231,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Confirm?");
         builder.setView(customDialogView);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -238,15 +239,15 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                 dialog.dismiss();
                 if(cb.isChecked())
                 {
-                    Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                     editor=sharedPreferences.edit();
-                    editor.putBoolean("SHOW_DIALOG",false);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
                 }
                 addNewBill(date,name,amount);
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -254,7 +255,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         });
         if(showDialog)
         {
-            if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+            if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else
                 addNewBill(date,name,amount);
@@ -281,11 +282,11 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         db.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
 
         //insert into party account
-        DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[] {"Purchase on "+date,amount,"","Purchase",date});
+        DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
+        db_party.insertData(new String[] {"Purchase on "+date,amount,"",getString(R.string.Purchase),date});
 
         Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewBill.class));
         finish();
     }

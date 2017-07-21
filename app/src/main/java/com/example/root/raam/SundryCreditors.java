@@ -23,15 +23,16 @@ public class SundryCreditors extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sundry_creditors);
-        getSupportActionBar().setTitle("Sundry Creditors");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.Sundry_Creditors));
         showFAB();
-        acc_features=this.getResources().getStringArray(R.array.acc_features);
+        acc_features=this.getResources().getStringArray(R.array.Acc_Features);
 
-        db=new DatabaseHelper(this,"Creditor",acc_features.length,acc_features);
+        db=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor),acc_features.length,acc_features);
 
 
         ListView list = (ListView) findViewById(R.id.list);
-        adapter = new CustomListAdapter(this, data,"Creditor");
+        adapter = new CustomListAdapter(this, data,getString(R.string.Creditor));
         list.setAdapter(adapter);
     }
 

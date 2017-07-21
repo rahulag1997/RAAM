@@ -13,15 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewAccount extends BaseActivity
 {
-    private String[] acc_types;
-    private String[] acc_features;
-    private String[] acc_view_features;
-
+    private String[] acc_features, acc_view_features;
     Spinner spinner;
     SharedPreferences sharedPreferences;
     EditText name_et,val_et;
@@ -32,15 +28,16 @@ public class NewAccount extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_account);
-        getSupportActionBar().setTitle("New Account");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(getString(R.string.New_Account));
         showFAB();
 
-        acc_types=this.getResources().getStringArray(R.array.acc_types);
-        acc_features=this.getResources().getStringArray(R.array.acc_features);
-        acc_view_features=this.getResources().getStringArray(R.array.acc_view_features);
+        String[] acc_types = this.getResources().getStringArray(R.array.Acc_Types);
+        acc_features=this.getResources().getStringArray(R.array.Acc_Features);
+        acc_view_features=this.getResources().getStringArray(R.array.Acc_View_Features);
 
         //need for SHOW_DIALOG and SHOW_REPEAT
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
 
         name_et=(EditText) findViewById(R.id.name_et);
         val_et=(EditText)findViewById(R.id.valEditText);
@@ -50,9 +47,9 @@ public class NewAccount extends BaseActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         //For selecting default type
-        if(getIntent().hasExtra("TYPE"))
+        if(getIntent().hasExtra(getString(R.string.ACC_TYPE)))
         {
-            spinner.setSelection(getIntent().getIntExtra("TYPE",0));
+            spinner.setSelection(getIntent().getIntExtra(getString(R.string.ACC_TYPE),0));
         }
     }
 
@@ -67,10 +64,10 @@ public class NewAccount extends BaseActivity
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
         final CheckBox cb=(CheckBox)customDialogView.findViewById(R.id.cb);
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle("Confirm?");
+        builder.setTitle(getString(R.string.Confirm));
         builder.setView(customDialogView);
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -78,16 +75,16 @@ public class NewAccount extends BaseActivity
                 dialog.dismiss();
                 if(cb.isChecked())
                 {
-                    Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),getString(R.string.Confirmation_Disabled),Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor=sharedPreferences.edit();
-                    editor.putBoolean("SHOW_DIALOG",false);
+                    editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
                 }
                 addNewAccount();
             }
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+        builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialog, int which)
@@ -99,23 +96,23 @@ public class NewAccount extends BaseActivity
         String name=name_et.getText().toString();
 
         if(name.equals(""))
-            name_et.setError("Required");
+            name_et.setError(getString(R.string.Required));
         else
         {
-            db=new DatabaseHelper(this,spinner.getSelectedItem().toString(),acc_features.length, acc_features);
+            db=new DatabaseHelper(this,getString(R.string.Account)+"_"+spinner.getSelectedItem().toString(),acc_features.length, acc_features);
             Cursor cursor=db.getData();
             if(cursor.getCount()!=0)
             {
                 while (cursor.moveToNext())
                 {
-                    if(cursor.getString(1).equals(name)) //1 is the coloumn corresponding to the name field
+                    if(cursor.getString(1).equals(name)) //1 is the column corresponding to the name field
                     {
-                        name_et.setError("Already Exists");
+                        name_et.setError(getString(R.string.Exists));
                         return;
                     }
                 }
             }
-            if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+            if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else
             {
@@ -135,12 +132,12 @@ public class NewAccount extends BaseActivity
         db.insertData(new String[] {name,"0","0",amount,spinner.getSelectedItem().toString()});
 
         //add opening balance into acc
-        DatabaseHelper db_party=new DatabaseHelper(this,name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[]{getString(R.string.ob),amount,"","OB",sharedPreferences.getString("Opening Day","01-01-2017")});    //ob->opening balance
+        DatabaseHelper db_party=new DatabaseHelper(this,spinner.getSelectedItem().toString()+"_"+name,acc_view_features.length,acc_view_features);
+        db_party.insertData(new String[]{getString(R.string.Opening_Balance),amount,"",getString(R.string.OB),sharedPreferences.getString(getString(R.string.OD),"01-01-2017")});    //ob->opening balance
 
         Toast.makeText(getApplicationContext(),"Account Added",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
-            startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",spinner.getSelectedItemPosition()));
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
+            startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra(getString(R.string.ACC_TYPE),spinner.getSelectedItemPosition()));
         finish();
     }
 }

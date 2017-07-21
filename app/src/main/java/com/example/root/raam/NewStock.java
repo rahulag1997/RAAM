@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -16,28 +17,43 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class NewStock extends BaseActivity
 {
     public final String[] type={"Stock","Stock Group"};
-    String[] stock_grp ={"Socks","Belt","Hat","Cap","Leggins"};
+    ArrayList<String> stock_grp_list;
     Spinner grp_spinner;
     Spinner type_spinner;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    DatabaseHelper db;
+
+    ArrayAdapter<String> grp_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_stock);
-        sharedPreferences=this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        getSupportActionBar().setTitle("New Stock");
+
+        String[] sglf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
+        db=new DatabaseHelper(this,getString(R.string.SGL),sglf.length,sglf);
+
+        stock_grp_list=new ArrayList<>();
+
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle("New Stock");
         showFAB();
+
         grp_spinner=(Spinner)findViewById(R.id.stock_group_spinner);
-        ArrayAdapter<String> grp_adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, stock_grp);
+        grp_adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, stock_grp_list);
         grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         grp_spinner.setAdapter(grp_adapter);
+        getStockGroup();
+
         type_spinner = (Spinner) findViewById(R.id.stock_type_spinner);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, type);
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, type);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         type_spinner.setAdapter(adapter);
         if(getIntent().hasExtra("TYPE"))
@@ -62,13 +78,25 @@ public class NewStock extends BaseActivity
                     findViewById(R.id.rate_ll).setVisibility(View.VISIBLE);
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent)
             {
                 type_spinner.setSelection(0);
             }
         });
+    }
+
+    private void getStockGroup()
+    {
+        Cursor c=db.sortByName();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+            {
+                stock_grp_list.add(c.getString(1));
+            }
+        }
+        grp_adapter.notifyDataSetChanged();
     }
 
     private void showFAB()
@@ -95,12 +123,17 @@ public class NewStock extends BaseActivity
             case 1:
                 if(name.equals("")) 
                 {
-                    name_et.setError("Required");
+                    name_et.setError(getString(R.string.Required));
+                    return;
+                }
+                if(stock_grp_list.contains(name))
+                {
+                    name_et.setError(getString(R.string.Exists));
                     return;
                 }
                 builder.setTitle("Confirm?");
                 builder.setView(customDialogView);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -108,15 +141,15 @@ public class NewStock extends BaseActivity
                         dialog.dismiss();
                         if(cb.isChecked())
                         {
-                            Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                             editor=sharedPreferences.edit();
-                            editor.putBoolean("SHOW_DIALOG",false);
+                            editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                             editor.apply();
                         }
                         addNewStockGroup(name);
                     }
                 });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -124,7 +157,7 @@ public class NewStock extends BaseActivity
                         dialog.dismiss();
                     }
                 });
-                if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+                if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                     builder.create().show();
                 else
                     addNewStockGroup(name);
@@ -132,22 +165,27 @@ public class NewStock extends BaseActivity
             case 0:
                 if(name.equals(""))
                 {
-                    name_et.setError("Required");
+                    name_et.setError(getString(R.string.Required));
                     hasError=true;
                 }
                 if(rate.equals(""))
                 {
-                    rate_et.setError("Required");
+                    rate_et.setError(getString(R.string.Required));
                     hasError=true;
                 }
                 if(quantity.equals(""))
                 {
-                    quantity_et.setError("Required");
+                    quantity_et.setError(getString(R.string.Required));
+                    hasError=true;
+                }
+                if(exists(name,grp_spinner.getSelectedItem().toString()))
+                {
+                    name_et.setError(getString(R.string.Exists));
                     hasError=true;
                 }
                 builder.setTitle("Confirm?");
                 builder.setView(customDialogView);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                builder.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -155,15 +193,15 @@ public class NewStock extends BaseActivity
                         dialog.dismiss();
                         if(cb.isChecked())
                         {
-                            Toast.makeText(getApplicationContext(),"Confirmation Dialog Disabled",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),R.string.Confirmation_Disabled,Toast.LENGTH_SHORT).show();
                             editor=sharedPreferences.edit();
-                            editor.putBoolean("SHOW_DIALOG",false);
+                            editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                             editor.apply();
                         }
-                        addNewStock(name,quantity,rate);
+                        addNewStock(grp_spinner.getSelectedItem().toString(),name,quantity,rate);
                     }
                 });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+                builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -173,28 +211,57 @@ public class NewStock extends BaseActivity
                 });
                 if(!hasError)
                 {
-                    if(sharedPreferences.getBoolean("SHOW_DIALOG",true))
+                    if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                         builder.create().show();
                     else
-                        addNewStock(name,quantity,rate);
+                        addNewStock(grp_spinner.getSelectedItem().toString(),name,quantity,rate);
                 }
                 break;
         }
     }
 
-    private void addNewStockGroup(String name)
+    private boolean exists(String name, String s)
     {
+        String[] sgf=this.getResources().getStringArray(R.array.StockGroup_Features);
+        DatabaseHelper db=new DatabaseHelper(this,getString(R.string.SG)+"_"+s,sgf.length,sgf);
+        Cursor c=db.getData();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+                if(name.equals(c.getString(1)))
+                    return true;
+        }
+        return false;
+    }
+
+    private void addNewStockGroup(String name/*, String unit*/)
+    {
+        String[] fields=this.getResources().getStringArray(R.array.StockGroupListFeatures);
+        DatabaseHelper db=new DatabaseHelper(this,getString(R.string.SGL),fields.length,fields);
+        db.insertData(new String[] {name/*,unit*/});
         Toast.makeText(this,"Stock Group added successfully",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewStock.class).putExtra("TYPE",1));
         finish();
 
     }
 
-    private void addNewStock(String name, String quantity, String rate)
+    private void addNewStock(String stockGroup,String name, String quantity, String rate)
     {
+        String[] features=this.getResources().getStringArray(R.array.Acc_Features);
+        String[] fields=this.getResources().getStringArray(R.array.StockGroup_Features);
+
+        //update into stockGroup
+        DatabaseHelper db=new DatabaseHelper(this,getString(R.string.SG)+"_"+stockGroup,fields.length,fields);
+        db.insertData(new String[] {name,quantity,rate});
+
+        //create stock entry
+        DatabaseHelper db_stock=new DatabaseHelper(this,stockGroup+"_"+name,features.length,features);
+        db_stock.insertData(new String[] {getString(R.string.Opening_Balance),quantity,"",getString(R.string.OB),sharedPreferences.getString("Opening Day","01-01-2017")});
+
+
         Toast.makeText(this,"Stock added successfully",Toast.LENGTH_SHORT).show();
-        if(sharedPreferences.getBoolean("SHOW_AGAIN",true))
+        if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewStock.class).putExtra("TYPE",0));
         finish();
     }
