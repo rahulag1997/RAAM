@@ -136,4 +136,10 @@
         <item>Name</item>
         <item>Password</item>
     </string-array>
+    <string-array name="Item_Fields">
+        <item>Name</item>
+        <item>Quantity</item>
+        <item>Unit</item>
+        <item>Rate</item>
+    </string-array>
 </resources>

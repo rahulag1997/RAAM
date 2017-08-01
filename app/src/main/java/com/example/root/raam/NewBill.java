@@ -315,9 +315,6 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
     private void addNewBill(String date,String name,String amount)
     {
-        //TODO also update stock in background
-        //TODO add bill details in background
-
         DatabaseHelper db_party;
 
         if(name.equals("Cash"))
@@ -377,6 +374,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
             editor.apply();
         }
+        new Updater().execute(date);
 
         Toast.makeText(getApplicationContext(),"Bill Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
@@ -391,12 +389,37 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         total_tv.setText(Integer.toString(this.total));
     }
 
-    class Updater extends AsyncTask<Void,Void,Void>
+    private class Updater extends AsyncTask<String,Void,Void>
     {
         @Override
-        protected Void doInBackground(Void... params)
+        protected Void doInBackground(String... params)
         {
+            String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
+            String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
+            String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
+            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+sharedPreferences.getInt("BILL_NUM",0),item_fields.length,item_fields);
+            for (BILL_ITEM item:data)
+            {
+                //insert item into bill
+                db_bill.insertData(new String[]{item.stk_grp+" "+item.stk_item,item.quantity,item.unit,item.rate});
 
+                //update stock list
+                DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);
+                Cursor c=db_sg.getData();
+                if(c.getCount()!=0)
+                {
+                    while (c.moveToNext())
+                        if(c.getString(1).equals(item.stk_item))
+                            break;
+                    int sold=Integer.parseInt(c.getString(2))+Integer.parseInt(item.quantity);
+                    int bal=Integer.parseInt(c.getString(4))-Integer.parseInt(item.quantity);
+                    db_sg.updateData(new String[]{item.stk_item,Integer.toString(sold),c.getString(3),Integer.toString(bal),item.rate});
+                }
+
+                //insert into stock data
+                DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
+                db_stock.insertData(new String[]{"Bill_"+sharedPreferences.getInt("BILL_NUM",0),item.quantity,"","Bill",params[0]});
+            }
             return null;
         }
     }

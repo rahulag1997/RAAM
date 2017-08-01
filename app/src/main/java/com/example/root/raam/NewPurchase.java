@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -311,9 +312,6 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
     private void addNewBill(String date,String name,String amount)
     {
-        //TODO also update stock in background
-        //TODO add bill details in background
-
         Cursor c_acc=db.getData();
         while (c_acc.moveToNext())
         {
@@ -332,10 +330,47 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
         db_party.insertData(new String[] {"Purchase on "+date,amount,"",getString(R.string.Purchase),date});
 
+        new Updater().execute(date);
+
         Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewBill.class));
         finish();
+    }
+
+    class Updater extends AsyncTask<String,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(String... params)
+        {
+            String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
+            String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
+            String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
+            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+sharedPreferences.getInt("Purchase_Num",0),item_fields.length,item_fields);
+            for (BILL_ITEM item:data)
+            {
+                //insert item into bill
+                db_bill.insertData(new String[]{item.stk_grp+" "+item.stk_item,item.quantity,item.unit,item.rate});
+
+                //update stock list
+                DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);
+                Cursor c=db_sg.getData();
+                if(c.getCount()!=0)
+                {
+                    while (c.moveToNext())
+                        if(c.getString(1).equals(item.stk_item))
+                            break;
+                    int purchased=Integer.parseInt(c.getString(3))+Integer.parseInt(item.quantity);
+                    int bal=Integer.parseInt(c.getString(4))+Integer.parseInt(item.quantity);
+                    db_sg.updateData(new String[]{item.stk_item,c.getString(2),Integer.toString(purchased),Integer.toString(bal),item.rate});
+                }
+
+                //insert into stock data
+                DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
+                db_stock.insertData(new String[]{"Purchase_"+sharedPreferences.getInt("Purchase_Num",0),item.quantity,"","Purchase",params[0]});
+            }
+            return null;
+        }
     }
 
     @Override
