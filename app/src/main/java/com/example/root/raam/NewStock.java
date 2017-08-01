@@ -253,7 +253,7 @@ public class NewStock extends BaseActivity
 
         //update into stockGroup
         DatabaseHelper db=new DatabaseHelper(this,getString(R.string.SG)+"_"+stockGroup,fields.length,fields);
-        db.insertData(new String[] {name,quantity,rate});
+        db.insertData(new String[] {name,"0","0",quantity,rate});
 
         //create stock entry
         DatabaseHelper db_stock=new DatabaseHelper(this,stockGroup+"_"+name,features.length,features);

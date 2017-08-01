@@ -1,23 +1,18 @@
 package com.example.root.raam;
 
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 public class Stock extends BaseActivity
 {
-    String[] type={"Stock Group", "Stock"};
-    String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};
-    SparseArray<Stock_group> stock_groups = new SparseArray<Stock_group>();
+    SparseArray<Stock_group> stock_groups;
+    CustomExpandableListAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -25,12 +20,16 @@ public class Stock extends BaseActivity
         setContentView(R.layout.activity_stock);
         getSupportActionBar().setTitle("Stock");
 
-        getData();
+        stock_groups = new SparseArray<>();
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.stock_list);
 
-        CustomExpandableListAdapter adapter = new CustomExpandableListAdapter(this,stock_groups);
+        adapter = new CustomExpandableListAdapter(this,stock_groups);
+
         listView.setAdapter(adapter);
+
+        getData();
+
         showFAB();
     }
 
@@ -50,6 +49,7 @@ public class Stock extends BaseActivity
 
     public void getData()
     {
+        stock_groups.clear();
         int j=0;
         String[] sglf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
         String[] sgf=this.getResources().getStringArray(R.array.StockGroup_Features);
@@ -73,5 +73,12 @@ public class Stock extends BaseActivity
                 stock_groups.append(j++,stock_group);
             }
         }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getData();
     }
 }

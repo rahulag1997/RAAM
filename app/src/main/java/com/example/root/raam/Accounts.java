@@ -47,7 +47,7 @@ public class Accounts extends BaseActivity
 
     public void openSales(View view)
     {
-        startActivity(new Intent(this,AccountView.class).putExtra(getString(R.string.Name),getString(R.string.Sales)).putExtra(getString(R.string.ACC_TYPE),getString(R.string.Sales)));
+        startActivity(new Intent(this,Sales.class));
     }
 
     public void openSC(View view)

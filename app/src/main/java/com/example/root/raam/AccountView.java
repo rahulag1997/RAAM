@@ -89,6 +89,10 @@ public class AccountView extends BaseActivity
                             balance-=Integer.parseInt(rawData.getString(2));
                             data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
                             break;
+                        case "Bill":
+                            balance+=Integer.parseInt(rawData.getString(2));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
                     break;

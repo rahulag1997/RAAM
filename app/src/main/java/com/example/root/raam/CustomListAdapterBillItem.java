@@ -99,7 +99,7 @@ class CustomListAdapterBillItem extends BaseAdapter
         qty_tv.setText(bill_item.quantity);
         unit_tv.setText(bill_item.unit);
         rate_tv.setText(bill_item.rate);
-        amt_tv.setText(Integer.parseInt(bill_item.quantity)*Integer.parseInt(bill_item.rate));
+        amt_tv.setText(Integer.toString(Integer.parseInt(bill_item.quantity)*Integer.parseInt(bill_item.rate)));
         convertView.setOnClickListener(new View.OnClickListener()
         {
             @Override

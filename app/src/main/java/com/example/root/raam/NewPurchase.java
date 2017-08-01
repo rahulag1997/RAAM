@@ -30,11 +30,10 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    ArrayList<String> names=new ArrayList<>();
-    String[] testStock={"Socks","Belt","Hat","Cap","Leggins"};  //TODO replace with stock groups
-    String[] testStock_list={"Socks1","Belt2","Hat3","Cap4","Leggins5"};    //TODO replace with stocks dynamically
+    ArrayList<String> names, stockGroups, stocks;
+    ArrayList<BILL_ITEM> data;
+    ArrayAdapter<String> stk_grp_adapter,stk_item_adapter;
     String[] units={"Dz","Pcs"};    //TODO replace with units
-    ArrayList<BILL_ITEM> data=new ArrayList<>();
     CustomListAdapterBillItem c_adapter;
     Integer total=0;
     TextView total_tv;
@@ -50,6 +49,12 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle(getString(R.string.Purchase));
         showFAB();
+
+        names=new ArrayList<>();
+        stockGroups=new ArrayList<>();
+        stocks=new ArrayList<>();
+        data=new ArrayList<>();
+
         acc_features = getResources().getStringArray(R.array.Acc_Features);
         acc_view_features = getResources().getStringArray(R.array.Acc_View_Features);
 
@@ -122,12 +127,14 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     {
         View new_item=View.inflate(this,R.layout.new_item,null);
         final Spinner stk_grp_spinner=(Spinner)new_item.findViewById(R.id.stock_group_spinner);
-        ArrayAdapter<String> stk_grp_adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,testStock);
+        stk_grp_adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,stockGroups);
         stk_grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stk_grp_spinner.setAdapter(stk_grp_adapter);
 
+        getStockGroup();
+
         final Spinner stk_item_spinner=(Spinner)new_item.findViewById(R.id.stock_spinner);
-        final ArrayAdapter<String> stk_item_adapter= new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,testStock_list);
+        stk_item_adapter= new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,stocks);
         stk_item_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stk_item_spinner.setAdapter(stk_item_adapter);
 
@@ -136,8 +143,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                testStock_list[position]=testStock[position];   //TODO CHANGE STOCK DYNAMICALLY
-                stk_item_adapter.notifyDataSetChanged();
+                getStock(stockGroups.get(position));;
             }
 
             @Override
@@ -185,6 +191,16 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                             rate_et.setError(getString(R.string.Required));
                             error=true;
                         }
+                        if(stk_grp_spinner.getSelectedItem()==null)
+                        {
+                            Toast.makeText(getApplicationContext(),"No group selected",Toast.LENGTH_SHORT).show();
+                            error=true;
+                        }
+                        if(stk_item_spinner.getSelectedItem()==null)
+                        {
+                            Toast.makeText(getApplicationContext(),"No item selected",Toast.LENGTH_SHORT).show();
+                            error=true;
+                        }
 
                         if(!error)
                         {
@@ -200,6 +216,37 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             }
         });
         a_dialog.show();
+    }
+
+    private void getStockGroup()
+    {
+        String[] fields=this.getResources().getStringArray(R.array.StockGroupListFeatures);
+        stockGroups.clear();
+        DatabaseHelper db=new DatabaseHelper(this,getString(R.string.SGL),fields.length,fields);
+        Cursor c=db.sortByName();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+            {
+                stockGroups.add(c.getString(1));
+            }
+        }
+        stk_grp_adapter.notifyDataSetChanged();
+
+    }
+
+    private void getStock(String stockGroup)
+    {
+        stocks.clear();
+        String[] fields=this.getResources().getStringArray(R.array.StockGroup_Features);
+        DatabaseHelper db=new DatabaseHelper(this,getString(R.string.StockGroup)+"_"+stockGroup,fields.length,fields);
+        Cursor c=db.sortByName();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+                stocks.add(c.getString(1));
+        }
+        stk_item_adapter.notifyDataSetChanged();
     }
 
     public void submit(View view)

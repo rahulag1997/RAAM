@@ -56,7 +56,6 @@ public class NewReceipt extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 actv.setError(null);
-                Toast.makeText(getApplicationContext(),Integer.toString(position),Toast.LENGTH_SHORT).show();
             }
         });
     }

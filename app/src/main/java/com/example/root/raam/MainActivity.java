@@ -34,11 +34,17 @@ public class MainActivity extends BaseActivity
         }
         if(!(sharedPreferences.getBoolean(getString(R.string.SALES_CREATED),false)))
         {
-            DatabaseHelper db=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Sales), acc_view_features.length, acc_view_features);
-            db.insertData(new String[] {getString(R.string.Opening_Balance),"0","",getString(R.string.OB),"01-01-2017"});
             SharedPreferences.Editor editor=sharedPreferences.edit();
+
+            DatabaseHelper db=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Credit), acc_view_features.length, acc_view_features);
+            db.insertData(new String[] {getString(R.string.Opening_Balance),"0","",getString(R.string.OB),"01-01-2017"});
+            editor.putInt(getString(R.string.SALES_CREDIT),0);
+
+            DatabaseHelper db2=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Cash), acc_view_features.length, acc_view_features);
+            db2.insertData(new String[] {getString(R.string.Opening_Balance),"0","",getString(R.string.OB),"01-01-2017"});
+            editor.putInt(getString(R.string.SALES_CASH),0);
+
             editor.putBoolean(getString(R.string.SALES_CREATED),true);
-            editor.putInt(getString(R.string.SALES),0);
             editor.apply();
         }
         if(!(sharedPreferences.getBoolean(getString(R.string.EXP_CREATED),false)))

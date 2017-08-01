@@ -141,7 +141,7 @@ public class NewExpense extends BaseActivity
         db_cashInHand.insertData(new String[] {details+" "+date,amount,details,"Expense",date});
 
         //update cash balance
-        int updatedCash=sharedPreferences.getInt("CASH IN HAND",0)-Integer.parseInt(amount);
+        int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt("CASH IN HAND",updatedCash);
         editor.apply();

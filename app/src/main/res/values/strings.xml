@@ -53,7 +53,7 @@
     <string name="Name_Party">Name_Party</string>
     <string name="Bill_No">Bill No.</string>
     <string name="EXP">EXP</string>
-    <string name="SALES">SALES</string>
+
     <string name="Test">Test</string>
     <string name="ACC_TYPE">ACC TYPE</string>
     <string name="Cash">Cash</string>
@@ -83,6 +83,10 @@
     <string name="Bill">Bill</string>
     <string name="Receipt">Receipt</string>
     <string name="SG">StockGroup</string>
+    <string name="SALES_CREDIT">SALES_CREDIT</string>
+    <string name="SALES_CASH">SALES_CASH</string>
+    <string name="Cash_Sales">Cash Sales</string>
+    <string name="Credit_Sales">Credit Sales</string>
     <string-array name="Units">
         <item>Dz</item>
         <item>Pcs</item>
@@ -123,6 +127,8 @@
     </string-array>
     <string-array name="StockGroup_Features">
         <item>Name</item>
+        <item>Sold</item>
+        <item>Purchased</item>
         <item>Quantity</item>
         <item>Rate</item>
     </string-array>

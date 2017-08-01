@@ -99,7 +99,7 @@
             android:id="@+id/rate_et"
             android:inputType="number"
             android:padding="10dp"
-            android:hint="Quantity"/>
+            android:hint="Rate"/>
 
     </LinearLayout>
 

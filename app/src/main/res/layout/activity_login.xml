@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.root.raam.LoginActivity">
 
-    <EditText
-        android:id="@+id/pass_et"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword" />
-
     <AutoCompleteTextView
         android:id="@+id/name_actv"
         android:layout_width="wrap_content"
@@ -27,7 +17,17 @@
         android:inputType="textNoSuggestions"
         android:maxLines="1"
         android:hint="Company Name" />
-    <!--TODO fix max lines !-->
+
+    <EditText
+        android:id="@id/pass_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword" />
+
 
     <Button
         android:layout_width="wrap_content"

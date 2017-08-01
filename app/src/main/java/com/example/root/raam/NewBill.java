@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     String[] units={"Dz","Pcs"};    //TODO replace with units
 
     CustomListAdapterBillItem c_adapter;
+
     Integer total=0;
     TextView total_tv;
 
@@ -209,7 +211,6 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
                         {
                             c_adapter.addItem(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             c_adapter.notifyDataSetChanged();
-                            //data.add(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             total+=Integer.parseInt(quantity)*Integer.parseInt(rate);
                             total_tv.setText(Integer.toString(total));
                             a_dialog.dismiss();
@@ -317,39 +318,65 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         //TODO also update stock in background
         //TODO add bill details in background
 
-        Cursor cursor_accList= db_accList.getData();
-        while (cursor_accList.moveToNext())
-        {
-            if(cursor_accList.getString(1).equals(name))
-                break;
-        }
-        int balance=Integer.parseInt(cursor_accList.getString(4));
-        int credit=Integer.parseInt(cursor_accList.getString(3));
-
-        balance=balance+Integer.parseInt(amount);
-        credit=credit+Integer.parseInt(amount);
-
-        //Update in acc_list
-        db_accList.updateData(new String[] {name,cursor_accList.getString(2),Integer.toString(credit),Integer.toString(balance),cursor_accList.getString(5)});
         DatabaseHelper db_party;
 
-        //insert in party account
         if(name.equals("Cash"))
+        {
+            //update cash balance
+            int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)+Integer.parseInt(amount);
+            editor=sharedPreferences.edit();
+            editor.putInt("CASH IN HAND",updatedCash);
+            editor.apply();
+
+            //insert into cash account
             db_party=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
+            db_party.insertData(new String[] {"Bill on "+date,amount,"",getString(R.string.Bill),date});
+
+            //insert in sales account
+            DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Cash),acc_view_features.length,acc_view_features);
+            db_sales.insertData(new String[] {name+" "+date,amount,"",getString(R.string.Bill),date});
+
+            //update sales balance
+            editor=sharedPreferences.edit();
+            int updatedSales=sharedPreferences.getInt(getString(R.string.SALES_CASH),0)+Integer.parseInt(amount);
+            editor.putInt(getString(R.string.SALES_CASH),updatedSales);
+            editor.apply();
+
+
+        }
         else
+        {
+            Cursor cursor_accList= db_accList.getData();
+            while (cursor_accList.moveToNext())
+            {
+                if(cursor_accList.getString(1).equals(name)) {
+                    break;
+                }
+            }
+            int balance=Integer.parseInt(cursor_accList.getString(4));
+            int credit=Integer.parseInt(cursor_accList.getString(3));
+
+            balance=balance+Integer.parseInt(amount);
+            credit=credit+Integer.parseInt(amount);
+
+            //Update in acc_list
+            db_accList.updateData(new String[] {name,cursor_accList.getString(2),Integer.toString(credit),Integer.toString(balance),cursor_accList.getString(5)});
+
+            //insert in party account
             db_party=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
+            db_party.insertData(new String[] {"Bill on "+date,amount,"",getString(R.string.Bill),date});
 
-        db_party.insertData(new String[] {"Bill on "+date,amount,"",getString(R.string.Bill),date});
+            //insert in sales account
+            DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Credit),acc_view_features.length,acc_view_features);
+            db_sales.insertData(new String[] {name+" "+date,amount,"",getString(R.string.Bill),date});
 
-        //insert in sales account
-        DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Sales),acc_view_features.length,acc_view_features);
-        db_sales.insertData(new String[] {name+" "+date,amount,"",getString(R.string.Bill),date});
+            //update sales balance
+            editor=sharedPreferences.edit();
+            int updatedSales=sharedPreferences.getInt(getString(R.string.SALES_CREDIT),0)+Integer.parseInt(amount);
+            editor.putInt(getString(R.string.SALES_CREDIT),updatedSales);
 
-        //update sales balance
-        editor=sharedPreferences.edit();
-        int updatedSales=sharedPreferences.getInt(getString(R.string.Sales),0)+Integer.parseInt(amount);
-        editor.putInt(getString(R.string.Sales),updatedSales);
-        editor.apply();
+            editor.apply();
+        }
 
         Toast.makeText(getApplicationContext(),"Bill Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
@@ -362,5 +389,15 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     {
         this.total-=change;
         total_tv.setText(Integer.toString(this.total));
+    }
+
+    class Updater extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+
+            return null;
+        }
     }
 }

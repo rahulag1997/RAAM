@@ -58,7 +58,7 @@ public class SundryCreditors extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra("TYPE",4));
+                startActivity(new Intent(getApplicationContext(),NewAccount.class).putExtra(getString(R.string.ACC_TYPE),4));
             }
         });
     }
