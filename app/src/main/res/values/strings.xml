@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RAAM</string>
+    <string name="app_name">EAS</string>
     <string name="nav_drawer_opened">drawer opened</string>
     <string name="nav_drawer_closed">drawer closed</string>
     <string name="Accounts">Accounts</string>
@@ -87,6 +87,7 @@
     <string name="SALES_CASH">SALES_CASH</string>
     <string name="Cash_Sales">Cash Sales</string>
     <string name="Credit_Sales">Credit Sales</string>
+    <string name="BILL_NUM">BILL_NUM</string>
     <string-array name="Units">
         <item>Dz</item>
         <item>Pcs</item>

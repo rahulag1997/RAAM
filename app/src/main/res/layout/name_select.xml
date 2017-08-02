@@ -16,7 +16,8 @@
         android:layout_width="match_parent"
         android:maxLines="1"
         android:hint="@string/Name"
-        android:inputType="textNoSuggestions"
+        android:inputType="textCapWords"
+        android:completionThreshold="1"
         android:layout_height="match_parent"
         android:id="@+id/name_actv"/>
     <!--TODO android:singleLine="true"!-->

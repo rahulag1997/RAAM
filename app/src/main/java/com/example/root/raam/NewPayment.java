@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -28,7 +29,7 @@ public class NewPayment extends BaseActivity
     DatabaseHelper db_acc_creditor,db_acc_bank;
     private String[] acc_view_features;
     public int boundary;
-
+    EditText amtET;
 
     ArrayList<String> names=new ArrayList<>();
     @Override
@@ -38,6 +39,8 @@ public class NewPayment extends BaseActivity
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle(R.string.Payment);
         showFAB();
+        amtET=(EditText)findViewById(R.id.amountEditText);
+
         String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
         acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
 
@@ -54,6 +57,13 @@ public class NewPayment extends BaseActivity
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
         AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
         actv.setAdapter(adapter);
+        actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                amtET.requestFocus();
+            }
+        });
     }
 
     private void getData(DatabaseHelper db)
@@ -112,7 +122,6 @@ public class NewPayment extends BaseActivity
     {
         TextView dateET=(TextView) findViewById(R.id.dateEditText);
         EditText nameET=(EditText)findViewById(R.id.name_actv);
-        EditText amtET=(EditText)findViewById(R.id.amountEditText);
         final String date=(dateET.getText()).toString();
         final String name=(nameET.getText()).toString();
         final String amount=(amtET.getText()).toString();

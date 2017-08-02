@@ -21,7 +21,6 @@ public class NewExpense extends BaseActivity
 {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

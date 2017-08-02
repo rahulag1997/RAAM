@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,13 +29,17 @@ public class NewStock extends BaseActivity
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     DatabaseHelper db;
+    EditText rate_et;
 
     ArrayAdapter<String> grp_adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_stock);
+
+        rate_et=(EditText)findViewById(R.id.rate_et);
 
         String[] sglf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
         db=new DatabaseHelper(this,getString(R.string.SGL),sglf.length,sglf);
@@ -104,8 +109,7 @@ public class NewStock extends BaseActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
     }
-
-    public void submit(View view) 
+    public void submit(View view)
     {
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
         final CheckBox cb=(CheckBox)customDialogView.findViewById(R.id.cb);
@@ -113,7 +117,6 @@ public class NewStock extends BaseActivity
 
         EditText name_et=(EditText)findViewById(R.id.name_et);
         final String name=name_et.getText().toString();
-        EditText rate_et=(EditText)findViewById(R.id.rate_et);
         final String rate=rate_et.getText().toString();
         EditText quantity_et=(EditText)findViewById(R.id.quantity_et);
         final String quantity=quantity_et.getText().toString();

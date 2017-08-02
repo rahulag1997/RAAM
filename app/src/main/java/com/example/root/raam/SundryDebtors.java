@@ -16,6 +16,7 @@ public class SundryDebtors extends BaseActivity
     DatabaseHelper db;
     ArrayList<DATA_ITEM> data=new ArrayList<>();
     CustomListAdapter adapter;
+    View footer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,20 +30,29 @@ public class SundryDebtors extends BaseActivity
         ListView list = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, data,"Debtor");
         list.setAdapter(adapter);
+        footer=getLayoutInflater().inflate(R.layout.footer,null);
+        list.addFooterView(footer);
+
     }
 
     private void getData()
     {
-        int total=0;
+        int sno=1;
+        int total=0,dtotal=0,ctotal=0;
         Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
         while (c.moveToNext())
         {
-            data.add(new DATA_ITEM(c.getString(1),c.getString(2),c.getString(3),c.getString(4)));
+            data.add(new DATA_ITEM(sno,c.getString(1),c.getString(2),c.getString(3),c.getString(4)));
+            sno++;
             total+=Integer.parseInt(c.getString(4));
+            dtotal+=Integer.parseInt(c.getString(2));
+            ctotal+=Integer.parseInt(c.getString(3));
         }
-        ((TextView)findViewById(R.id.total_tv)).setText(Integer.toString(total));
+        ((TextView)footer.findViewById(R.id.total_tv)).setText(Integer.toString(total));
+        ((TextView)footer.findViewById(R.id.ctotal_tv)).setText(Integer.toString(ctotal));
+        ((TextView)footer.findViewById(R.id.dtotal_tv)).setText(Integer.toString(dtotal));
     }
 
     private void showFAB()

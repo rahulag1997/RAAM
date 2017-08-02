@@ -3,8 +3,10 @@ package com.example.root.raam;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,6 +27,13 @@ public class NewCompany extends AppCompatActivity
         name=(EditText)findViewById(R.id.name_et);
         pass=(EditText)findViewById(R.id.pass_et);
         pass2=(EditText)findViewById(R.id.confirm_et);
+        pass2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                addCompany();
+                return true;
+            }
+        });
         db=new DatabaseHelper(this,getString(R.string.Company_List),company_fields.length,company_fields);
         Cursor c=db.getData();
         if (c.getCount()==0)
@@ -34,8 +43,11 @@ public class NewCompany extends AppCompatActivity
             names.add(c.getString(1));
         }
     }
-
     public void addCompany(View view)
+    {
+        addCompany();
+    }
+    public void addCompany()
     {
         if(name.getText().toString().equals(""))
         {

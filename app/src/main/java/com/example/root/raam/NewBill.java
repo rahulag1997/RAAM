@@ -35,6 +35,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     String[] units={"Dz","Pcs"};    //TODO replace with units
 
     CustomListAdapterBillItem c_adapter;
+    int BILLNO;
 
     Integer total=0;
     TextView total_tv;
@@ -50,8 +51,10 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bill);
         sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+        BILLNO=sharedPreferences.getInt(getString(R.string.BILL_NUM),1);
+
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle(getString(R.string.New_Bill));
+            getSupportActionBar().setTitle("Bill No. "+BILLNO);
         showFAB();
 
         names=new ArrayList<>();
@@ -327,7 +330,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
             //insert into cash account
             db_party=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
-            db_party.insertData(new String[] {"Bill on "+date,amount,"",getString(R.string.Bill),date});
+            db_party.insertData(new String[] {"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date});
 
             //insert in sales account
             DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Cash),acc_view_features.length,acc_view_features);
@@ -361,11 +364,11 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
             //insert in party account
             db_party=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
-            db_party.insertData(new String[] {"Bill on "+date,amount,"",getString(R.string.Bill),date});
+            db_party.insertData(new String[] {"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date});
 
             //insert in sales account
             DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Credit),acc_view_features.length,acc_view_features);
-            db_sales.insertData(new String[] {name+" "+date,amount,"",getString(R.string.Bill),date});
+            db_sales.insertData(new String[] {"Bill no "+BILLNO+" "+date,amount,"",getString(R.string.Bill),date});
 
             //update sales balance
             editor=sharedPreferences.edit();
@@ -397,7 +400,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
             String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
             String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
-            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+sharedPreferences.getInt("BILL_NUM",0),item_fields.length,item_fields);
+            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+BILLNO,item_fields.length,item_fields);
             for (BILL_ITEM item:data)
             {
                 //insert item into bill
@@ -418,8 +421,11 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
                 //insert into stock data
                 DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
-                db_stock.insertData(new String[]{"Bill_"+sharedPreferences.getInt("BILL_NUM",0),item.quantity,"","Bill",params[0]});
+                db_stock.insertData(new String[]{"Bill_"+BILLNO,item.quantity,"","Bill",params[0]});
             }
+            editor=sharedPreferences.edit();
+            editor.putInt(getString(R.string.BILL_NUM),BILLNO+1);
+            editor.apply();
             return null;
         }
     }

@@ -49,6 +49,8 @@ class CustomListAdapter2 extends BaseAdapter
         TextView dr_tv=(TextView)convertView.findViewById(R.id.data_dr);
         TextView cr_tv=(TextView)convertView.findViewById(R.id.data_cr);
         TextView bal_tv=(TextView)convertView.findViewById(R.id.data_bal);
+        TextView sno_tv=(TextView)convertView.findViewById(R.id.sno_tv);
+        sno_tv.setText(Integer.toString(item.sno));
         name_tv.setText(item.name);
         dr_tv.setText(item.dr);
         cr_tv.setText(item.cr);

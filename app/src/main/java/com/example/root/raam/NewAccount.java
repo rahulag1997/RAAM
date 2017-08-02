@@ -8,11 +8,13 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewAccount extends BaseActivity
@@ -41,6 +43,15 @@ public class NewAccount extends BaseActivity
 
         name_et=(EditText) findViewById(R.id.name_et);
         val_et=(EditText)findViewById(R.id.valEditText);
+        val_et.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                Submit();
+                return true;
+            }
+        });
 
         spinner = (Spinner) findViewById(R.id.account_type_spinner);
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, acc_types);
@@ -58,8 +69,11 @@ public class NewAccount extends BaseActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
     }
-
     public void submit(View view)
+    {
+        Submit();
+    }
+    public void Submit()
     {
         View customDialogView= View.inflate(this,R.layout.confirm_dialog,null);
         final CheckBox cb=(CheckBox)customDialogView.findViewById(R.id.cb);

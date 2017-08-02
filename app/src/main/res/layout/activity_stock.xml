@@ -10,6 +10,7 @@
     <include layout="@layout/title"
         android:layout_width="match_parent"
         android:layout_margin="5dp"
+        android:id="@+id/title_line"
         android:layout_height="wrap_content">
     </include>
 

@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 public class Stock extends BaseActivity
 {
@@ -21,6 +22,10 @@ public class Stock extends BaseActivity
         getSupportActionBar().setTitle("Stock");
 
         stock_groups = new SparseArray<>();
+
+        View title=findViewById(R.id.title_line);
+        ((TextView)title.findViewById(R.id.data_dr)).setText("Sold");
+        ((TextView)title.findViewById(R.id.data_cr)).setText("Purchased");
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.stock_list);
 

@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -38,9 +42,26 @@ public class LoginActivity extends AppCompatActivity
         name_actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
         name_actv.setAdapter(adapter);
         pass_et=(EditText)findViewById(R.id.pass_et);
+        name_actv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                pass_et.requestFocus();
+            }
+        });
+        pass_et.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                Login();
+                return true;
+            }
+        });
     }
 
-    public void login(View view)
+    public void Login()
     {
         String companyName=name_actv.getText().toString();
         String password=pass_et.getText().toString();
@@ -59,6 +80,11 @@ public class LoginActivity extends AppCompatActivity
         {
             name_actv.setError("Company does not exist in Database");
         }
+    }
+
+    public void login(View view)
+    {
+        Login();
     }
 
     @Override

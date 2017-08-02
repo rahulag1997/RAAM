@@ -30,6 +30,7 @@ public class NewReceipt extends BaseActivity
     DatabaseHelper db_acc_debtor,db_acc_bank;
     int boundary;
     ArrayList<String> names=new ArrayList<>();
+    EditText amtET;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +39,8 @@ public class NewReceipt extends BaseActivity
         setContentView(R.layout.activity_new_receipt);
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle(getString(R.string.Receipt));
+
+        amtET=(EditText)findViewById(R.id.amountEditText);
 
         showFAB();
         String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
@@ -56,6 +59,7 @@ public class NewReceipt extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 actv.setError(null);
+                amtET.requestFocus();
             }
         });
     }
@@ -109,12 +113,10 @@ public class NewReceipt extends BaseActivity
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
     public void submit(View view)
     {
         TextView dateET=(TextView) findViewById(R.id.dateEditText);
         EditText nameET=(EditText)findViewById(R.id.name_actv);
-        EditText amtET=(EditText)findViewById(R.id.amountEditText);
         final String date=(dateET.getText()).toString();
         final String name=(nameET.getText()).toString();
         final String amount=(amtET.getText()).toString();
