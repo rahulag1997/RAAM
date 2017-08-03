@@ -89,4 +89,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         SQLiteDatabase db=this.getWritableDatabase();
         return db.query(TABLE_NAME,keys,null,null,null,null,"Name ASC");
     }
+
+    Cursor getRow(int num)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        num--;
+        String n=Integer.toString(num);
+        return db.rawQuery("select * from "+TABLE_NAME+" limit 1 offset "+n,null);
+    }
 }

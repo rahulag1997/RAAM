@@ -43,7 +43,6 @@ public class AccountView extends BaseActivity
 
     public void getData()
     {
-        int sno=1;
         Cursor rawData=db.getData();
         if(rawData.getCount()==0)
             return;
@@ -58,15 +57,15 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Payment" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Receipt":
                             balance-=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this, R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -77,23 +76,23 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Receipt" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Expense":
                             balance-=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Payment":
                             balance-=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Bill":
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -104,11 +103,11 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Expense":
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -119,11 +118,11 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Bill":
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -134,15 +133,15 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Bill" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Receipt":
                             balance-=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -153,15 +152,15 @@ public class AccountView extends BaseActivity
                     {
                         case "OB" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---","---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---","---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Purchase" :
                             balance+=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),"---",rawData.getString(2),Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         case "Payment":
                             balance-=Integer.parseInt(rawData.getString(2));
-                            data.add(new DATA_ITEM(sno,rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance)));
+                            data.add(new DATA_ITEM(rawData.getString(1),rawData.getString(2),"---",Integer.toString(balance),rawData.getString(4),rawData.getString(6)));
                             break;
                         default:Toast.makeText(this,R.string.Error_Feature_Mismatch,Toast.LENGTH_SHORT).show();
                     }
@@ -169,7 +168,6 @@ public class AccountView extends BaseActivity
                 default:
                     Toast.makeText(this, R.string.Error_Account_Mismatch,Toast.LENGTH_SHORT).show();
             }
-            sno++;
         }
     }
 

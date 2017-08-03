@@ -88,6 +88,11 @@
     <string name="Cash_Sales">Cash Sales</string>
     <string name="Credit_Sales">Credit Sales</string>
     <string name="BILL_NUM">BILL_NUM</string>
+    <string name="Bills">Bills</string>
+    <string name="EXP_NUM">EXP_NUM</string>
+    <string name="PMT_NUM">PMT_NUM</string>
+    <string name="PUR_NUM">PUR_NUM</string>
+    <string name="RPT_NUM">RPT_NUM</string>
     <string-array name="Units">
         <item>Dz</item>
         <item>Pcs</item>
@@ -113,6 +118,7 @@
         <item>ExtraNote</item>
         <item>Type</item>
         <item>Date</item>
+        <item>Number</item>
     </string-array>
     <string-array name="Voture_Types">
         <item>Bill</item>

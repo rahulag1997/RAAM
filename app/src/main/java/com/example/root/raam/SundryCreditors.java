@@ -41,14 +41,13 @@ public class SundryCreditors extends BaseActivity
 
     private void getData()
     {
-        int sno=1;
         int total=0,dtotal=0,ctotal=0;
         Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
         while (c.moveToNext())
         {
-            data.add(new DATA_ITEM(sno++,c.getString(1),c.getString(2),c.getString(3),c.getString(4)));
+            data.add(new DATA_ITEM(c.getString(1),c.getString(2),c.getString(3),c.getString(4)));
             total+=Integer.parseInt(c.getString(4));
             dtotal+=Integer.parseInt(c.getString(2));
             ctotal+=Integer.parseInt(c.getString(3));

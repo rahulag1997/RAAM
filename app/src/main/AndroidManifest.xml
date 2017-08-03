@@ -37,7 +37,8 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".NewCompany" />
-        <activity android:name=".Sales"/>
+        <activity android:name=".Sales" />
+        <activity android:name=".ReceiptView"></activity>
     </application>
 
 </manifest>

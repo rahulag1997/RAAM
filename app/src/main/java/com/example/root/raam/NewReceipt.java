@@ -178,6 +178,8 @@ public class NewReceipt extends BaseActivity
 
     private void addNewReceipt(String date,String name,String amount,String extraNote)
     {
+        int RPT_NUM=sharedPreferences.getInt(getString(R.string.RPT_NUM),1);
+        String[] receipt_statement={"Receipt no "+RPT_NUM,amount,extraNote,getString(R.string.Receipt),date,""+RPT_NUM};
         boolean isBank=names.indexOf(name)>boundary-1;
         DatabaseHelper db;
 
@@ -210,17 +212,22 @@ public class NewReceipt extends BaseActivity
         updateACC(name,Integer.toString(debit),three,Integer.toString(balance),five,isBank);
 
         //insert into party account
-        db.insertData(new String[] {"Payment on "+date,amount,extraNote,getString(R.string.Receipt),date});
+        db.insertData(receipt_statement);
 
 
         //insert into cash account
         DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,getString(R.string.Receipt),date});
+        db_cashInHand.insertData(receipt_statement);
+
+        //insert into receipts
+        DatabaseHelper db_rpt=new DatabaseHelper(this,"Receipts",acc_view_features.length,acc_view_features);
+        db_rpt.insertData(receipt_statement);
 
         //update cash in hand
         int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)+Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt(getString(R.string.CASH_IN_HAND),updatedCash);
+        editor.putInt(getString(R.string.RPT_NUM),RPT_NUM+1);
         editor.apply();
 
         Toast.makeText(getApplicationContext(),"Receipt Added",Toast.LENGTH_SHORT).show();

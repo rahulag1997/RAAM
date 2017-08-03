@@ -1,6 +1,7 @@
 package com.example.root.raam;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,13 +45,13 @@ class CustomListAdapter2 extends BaseAdapter
         {
             convertView=layoutInflater.inflate(R.layout.data_item,null);
         }
-        DATA_ITEM item=(DATA_ITEM)getItem(position);
+        final DATA_ITEM item=(DATA_ITEM)getItem(position);
         final TextView name_tv=(TextView)convertView.findViewById(R.id.data_name);
         TextView dr_tv=(TextView)convertView.findViewById(R.id.data_dr);
         TextView cr_tv=(TextView)convertView.findViewById(R.id.data_cr);
         TextView bal_tv=(TextView)convertView.findViewById(R.id.data_bal);
         TextView sno_tv=(TextView)convertView.findViewById(R.id.sno_tv);
-        sno_tv.setText(Integer.toString(item.sno));
+        sno_tv.setText(Integer.toString(position+1));
         name_tv.setText(item.name);
         dr_tv.setText(item.dr);
         cr_tv.setText(item.cr);
@@ -60,7 +61,23 @@ class CustomListAdapter2 extends BaseAdapter
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(context,"Coming soon",Toast.LENGTH_SHORT).show();
+                switch (item.type)
+                {
+                    case "OB" :
+                        break;
+                    case "Payment" :
+                        break;
+                    case "Receipt":
+                        context.startActivity(new Intent(context,ReceiptView.class).putExtra("RPT_NUM",item.num));
+                        break;
+                    case "Expense":
+                        break;
+                    case "Bill":
+                        break;
+                    case "Purchase" :
+                        break;
+                }
+                Toast.makeText(context,item.type,Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

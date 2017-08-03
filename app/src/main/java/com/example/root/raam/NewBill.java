@@ -319,7 +319,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     private void addNewBill(String date,String name,String amount)
     {
         DatabaseHelper db_party;
-
+        String[] bill_statement={"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date,Integer.toString(BILLNO)};
         if(name.equals("Cash"))
         {
             //update cash balance
@@ -330,11 +330,15 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
             //insert into cash account
             db_party=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
-            db_party.insertData(new String[] {"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date});
+            db_party.insertData(bill_statement);
 
             //insert in sales account
             DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Cash),acc_view_features.length,acc_view_features);
-            db_sales.insertData(new String[] {name+" "+date,amount,"",getString(R.string.Bill),date});
+            db_sales.insertData(bill_statement);
+
+            //insert into bills
+            DatabaseHelper db_bills=new DatabaseHelper(this,getString(R.string.Bills),acc_view_features.length,acc_view_features);
+            db_bills.insertData(bill_statement);
 
             //update sales balance
             editor=sharedPreferences.edit();
@@ -364,11 +368,15 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
 
             //insert in party account
             db_party=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
-            db_party.insertData(new String[] {"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date});
+            db_party.insertData(bill_statement);
 
             //insert in sales account
             DatabaseHelper db_sales=new DatabaseHelper(this,getString(R.string.Sales)+"_"+getString(R.string.Credit),acc_view_features.length,acc_view_features);
-            db_sales.insertData(new String[] {"Bill no "+BILLNO+" "+date,amount,"",getString(R.string.Bill),date});
+            db_sales.insertData(bill_statement);
+
+            //insert into bills
+            DatabaseHelper db_bills=new DatabaseHelper(this,getString(R.string.Bills),acc_view_features.length,acc_view_features);
+            db_bills.insertData(bill_statement);
 
             //update sales balance
             editor=sharedPreferences.edit();

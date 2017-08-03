@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.root.raam.ReceiptView">
+
+    <include
+        layout="@layout/display_line"
+        android:id="@+id/date_line"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </include>
+
+    <include
+        layout="@layout/display_line"
+        android:id="@+id/name_line"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </include>
+
+    <include
+        layout="@layout/display_line"
+        android:id="@+id/amt_line"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </include>
+
+    <include
+        layout="@layout/display_line"
+        android:id="@+id/notes_line"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </include>
+
+</LinearLayout>

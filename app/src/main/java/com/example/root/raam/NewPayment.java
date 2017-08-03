@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -195,15 +196,13 @@ public class NewPayment extends BaseActivity
                     if (name.equals(c_acc.getString(1)))
                         break;
                 }
-                String two=c_acc.getString(2);
                 int credit=Integer.parseInt(c_acc.getString(3));
                 int balance=Integer.parseInt(c_acc.getString(4));
-                String five=c_acc.getString(5);
 
                 //update acc list
                 balance=balance+Integer.parseInt(amount);
                 credit+=credit+Integer.parseInt(amount);
-                db_acc_bank.updateData(new String[] {name,two,Integer.toString(credit),Integer.toString(balance),five});
+                db_acc_bank.updateData(new String[] {name,c_acc.getString(2),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
             }
             db=new DatabaseHelper(this,getString(R.string.Bank)+"_"+name,acc_view_features.length,acc_view_features);
         }
@@ -229,19 +228,26 @@ public class NewPayment extends BaseActivity
             db_acc_creditor.updateData(new String[] {name,Integer.toString(debit),three,Integer.toString(balance),five});
             db=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
         }
+        int PMT_NUM=sharedPreferences.getInt(getString(R.string.PMT_NUM),1);
+        String[] payment_statement={"Payment No "+PMT_NUM,amount,extraNote,getString(R.string.Payment),date,""+PMT_NUM};
 
 
         //insert in party account
-        db.insertData(new String[] {"Payment on "+date,amount,extraNote,getString(R.string.Payment),date});
+        db.insertData(payment_statement);
 
         //insert into cash acc
         DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(new String[] {name+" "+date,amount,extraNote,getString(R.string.Payment),date});
+        db_cashInHand.insertData(payment_statement);
+
+        //insert into payment list
+        DatabaseHelper db_pmt=new DatabaseHelper(this,"Payments",acc_view_features.length,acc_view_features);
+        db_pmt.insertData(payment_statement);
 
         //update cash
         int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt(getString(R.string.CASH_IN_HAND),updatedCash);
+        editor.putInt(getString(R.string.PMT_NUM),PMT_NUM+1);
         editor.apply();
 
 

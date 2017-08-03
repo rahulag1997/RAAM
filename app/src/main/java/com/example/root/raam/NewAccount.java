@@ -147,7 +147,7 @@ public class NewAccount extends BaseActivity
 
         //add opening balance into acc
         DatabaseHelper db_party=new DatabaseHelper(this,spinner.getSelectedItem().toString()+"_"+name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[]{getString(R.string.Opening_Balance),amount,"",getString(R.string.OB),sharedPreferences.getString(getString(R.string.OD),"01-01-2017")});    //ob->opening balance
+        db_party.insertData(new String[]{getString(R.string.Opening_Balance),amount,"",getString(R.string.OB),sharedPreferences.getString(getString(R.string.OD),"01-01-2017"),"1"});    //ob->opening balance
 
         Toast.makeText(getApplicationContext(),"Account Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))

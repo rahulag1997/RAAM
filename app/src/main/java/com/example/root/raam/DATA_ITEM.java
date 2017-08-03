@@ -6,7 +6,8 @@ public class DATA_ITEM
     String bal;
     String dr;
     String cr;
-    int sno;
+    String type;
+    String num;
 
     DATA_ITEM(String name,String dr, String cr, String bal)
     {
@@ -15,13 +16,14 @@ public class DATA_ITEM
         this.dr=dr;
         this.cr=cr;
     }
-    DATA_ITEM(int sno,String name,String dr, String cr, String bal)
+    DATA_ITEM(String name,String dr, String cr, String bal,String type,String num)
     {
-        this.sno=sno;
         this.name=name;
         this.bal=bal;
         this.dr=dr;
         this.cr=cr;
+        this.type=type;
+        this.num=num;
     }
 
 }

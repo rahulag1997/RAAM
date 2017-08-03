@@ -312,6 +312,8 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
     private void addNewBill(String date,String name,String amount)
     {
+        int PUR_NUM=sharedPreferences.getInt(getString(R.string.PUR_NUM),1);
+        String[] purchase_statement={"Purchase no "+PUR_NUM,amount,"",getString(R.string.Purchase),date,""+PUR_NUM};
         Cursor c_acc=db.getData();
         while (c_acc.moveToNext())
         {
@@ -329,6 +331,10 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         //insert into party account
         DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
         db_party.insertData(new String[] {"Purchase on "+date,amount,"",getString(R.string.Purchase),date});
+
+        editor=sharedPreferences.edit();
+        editor.putInt(getString(R.string.PUR_NUM),PUR_NUM+1);
+        editor.apply();
 
         new Updater().execute(date);
 
