@@ -33,7 +33,6 @@
     <string name="Unit">Unit</string>
     <string name="Rate">Rate</string>
     <string name="Add_Item">+ Add Item</string>
-    <string name="Enter_Name">Enter Name</string>
     <string name="Item_Name">Item Name</string>
     <string name="Debit">Debit</string>
     <string name="Credit">Credit</string>
@@ -44,14 +43,10 @@
     <string name="Payment">Payment</string>
     <string name="Confirmation">Don\'t ask for confirmation again</string>
     <string name="Quantity">Quantity</string>
-    <string name="Qcc_list">Account_List</string>
-    <string name="Account_Details">Account_Details</string>
     <string name="Opening_Balance">Opening Balance</string>
     <string name="OB">OB</string>
     <string name="Cash_in_Hand">Cash in Hand</string>
     <string name="CASH_IN_HAND">CASH_IN_HAND</string>
-    <string name="Name_Party">Name_Party</string>
-    <string name="Bill_No">Bill No.</string>
     <string name="EXP">EXP</string>
 
     <string name="Test">Test</string>
@@ -119,14 +114,6 @@
         <item>Type</item>
         <item>Date</item>
         <item>Number</item>
-    </string-array>
-    <string-array name="Voture_Types">
-        <item>Bill</item>
-        <item>Expense</item>
-        <item>Payment</item>
-        <item>Purchase</item>
-        <item>Receipt</item>
-        <item>OB</item>
     </string-array>
     <string-array name="StockGroupListFeatures">
         <item>Name</item>

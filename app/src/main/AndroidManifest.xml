@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.root.raam">
+    package="com.example.root.EAS">
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".BaseActivity" />
-        <activity android:name=".Accounts" />
-        <activity android:name=".Stock" />
-        <activity android:name=".BalanceSheet" />
-        <activity android:name=".NewReceipt" />
-        <activity android:name=".NewPayment" />
-        <activity android:name=".NewBill" />
-        <activity android:name=".NewPurchase" />
-        <activity android:name=".NewExpense" />
-        <activity android:name=".BankACC" />
-        <activity android:name=".SundryCreditors" />
-        <activity android:name=".SundryDebtors" />
-        <activity android:name=".NewAccount" />
-        <activity android:name=".NewStock" />
-        <activity android:name=".AccountView" />
-        <activity android:name=".StockView" />
-        <activity android:name=".Settings" />
-        <activity android:name=".BillView" />
-        <activity android:name=".WelcomeActivity">
+        <activity android:name="com.example.root.EAS.MainActivity" />
+        <activity android:name="com.example.root.EAS.BaseActivity" />
+        <activity android:name="com.example.root.EAS.Accounts" />
+        <activity android:name="com.example.root.EAS.Stock" />
+        <activity android:name="com.example.root.EAS.BalanceSheet" />
+        <activity android:name="com.example.root.EAS.NewReceipt" />
+        <activity android:name="com.example.root.EAS.NewPayment" />
+        <activity android:name="com.example.root.EAS.NewBill" />
+        <activity android:name="com.example.root.EAS.NewPurchase" />
+        <activity android:name="com.example.root.EAS.NewExpense" />
+        <activity android:name="com.example.root.EAS.BankACC" />
+        <activity android:name="com.example.root.EAS.SundryCreditors" />
+        <activity android:name="com.example.root.EAS.SundryDebtors" />
+        <activity android:name="com.example.root.EAS.NewAccount" />
+        <activity android:name="com.example.root.EAS.NewStock" />
+        <activity android:name="com.example.root.EAS.AccountView" />
+        <activity android:name="com.example.root.EAS.StockView" />
+        <activity android:name="com.example.root.EAS.Settings" />
+        <activity android:name="com.example.root.EAS.BillView" />
+        <activity android:name="com.example.root.EAS.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".NewCompany" />
-        <activity android:name=".Sales" />
-        <activity android:name=".ReceiptView" />
+        <activity android:name="com.example.root.EAS.LoginActivity" />
+        <activity android:name="com.example.root.EAS.NewCompany" />
+        <activity android:name="com.example.root.EAS.Sales" />
+        <activity android:name="com.example.root.EAS.ReceiptView" />
         <activity
-            android:name=".PaymentView"
+            android:name="com.example.root.EAS.PaymentView"
             android:label="@string/title_activity_payment_view"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ExpenseView" />
-        <activity android:name=".PurchaseView"></activity>
+        <activity android:name="com.example.root.EAS.ExpenseView" />
+        <activity android:name="com.example.root.EAS.PurchaseView"/>
     </application>
 </manifest>

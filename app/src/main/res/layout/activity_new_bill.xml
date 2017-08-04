@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    tools:context="com.example.root.raam.NewBill">
+    tools:context="com.example.root.EAS.NewBill">
 
     <include
         layout="@layout/date"

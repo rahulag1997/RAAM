@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
-    tools:context="com.example.root.raam.SundryDebtors">
+    tools:context="com.example.root.EAS.SundryDebtors">
 
     <include layout="@layout/title"
         android:layout_width="match_parent"

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.root.raam.Settings">
+    tools:context="com.example.root.EAS.Settings">
 
     <CheckBox
         android:layout_width="match_parent"
