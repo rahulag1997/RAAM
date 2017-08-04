@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -22,7 +21,7 @@ public class LoginActivity extends AppCompatActivity
     ArrayList<String> names, pass;
     ArrayAdapter<String> adapter;
     DatabaseHelper db;
-    AutoCompleteTextView name_actv;
+    AutoCompleteTextView name_ac_tv;
     EditText pass_et;
 
     @Override
@@ -39,10 +38,10 @@ public class LoginActivity extends AppCompatActivity
 
         adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
 
-        name_actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        name_actv.setAdapter(adapter);
+        name_ac_tv =(AutoCompleteTextView)findViewById(R.id.name_actv);
+        name_ac_tv.setAdapter(adapter);
         pass_et=(EditText)findViewById(R.id.pass_et);
-        name_actv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        name_ac_tv.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -63,7 +62,7 @@ public class LoginActivity extends AppCompatActivity
 
     public void Login()
     {
-        String companyName=name_actv.getText().toString();
+        String companyName= name_ac_tv.getText().toString();
         String password=pass_et.getText().toString();
         if(names.contains(companyName))
         {
@@ -78,7 +77,7 @@ public class LoginActivity extends AppCompatActivity
         }
         else
         {
-            name_actv.setError("Company does not exist in Database");
+            name_ac_tv.setError("Company does not exist in Database");
         }
     }
 

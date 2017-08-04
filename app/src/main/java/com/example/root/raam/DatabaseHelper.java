@@ -5,9 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v4.content.res.TypedArrayUtils;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -77,12 +74,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         db.update(TABLE_NAME,contentValues,"ID = ?",new String[] {c.getString(0)});
     }
-
+    /*
     void sortByDate(int dateColumn)
     {
         SQLiteDatabase db=this.getWritableDatabase();
         db.query(TABLE_NAME,keys,null,null,null,null,"Date ASC","LIMIT 1");
-    }
+    }*/
 
     Cursor sortByName()
     {

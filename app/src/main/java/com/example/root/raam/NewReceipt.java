@@ -53,12 +53,12 @@ public class NewReceipt extends BaseActivity
         getData(db_acc_bank);
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        final AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        actv.setAdapter(adapter);
-        actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv.setAdapter(adapter);
+        ac_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                actv.setError(null);
+                ac_tv.setError(null);
                 amtET.requestFocus();
             }
         });

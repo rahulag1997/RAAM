@@ -22,10 +22,10 @@ public class ReceiptView extends BaseActivity
         DatabaseHelper db=new DatabaseHelper(this,"Receipts",acc_view_features.length,acc_view_features);
         Cursor c=db.getRow(RPT_NUM);
 
-        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText("Date");
-        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText("Name");
-        ((TextView)findViewById(R.id.amt_line).findViewById(R.id.type_tv)).setText("Amount");
-        ((TextView)findViewById(R.id.notes_line).findViewById(R.id.type_tv)).setText("Extra Notes");
+        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText(getString(R.string.Date));
+        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText(getString(R.string.Name));
+        ((TextView)findViewById(R.id.amt_line).findViewById(R.id.type_tv)).setText(getString(R.string.Amount));
+        ((TextView)findViewById(R.id.notes_line).findViewById(R.id.type_tv)).setText(getString(R.string.Additional_Notes));
         c.moveToNext();
         ((TextView)findViewById(R.id.date_line).findViewById(R.id.value_tv)).setText(c.getString(5));
         ((TextView)findViewById(R.id.name_line).findViewById(R.id.value_tv)).setText(c.getString(1));
@@ -39,7 +39,7 @@ public class ReceiptView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Comming soon RPT",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Coming soon RPT",Toast.LENGTH_SHORT).show();
 
             }
         });

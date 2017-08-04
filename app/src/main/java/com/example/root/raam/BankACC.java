@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class BankACC extends BaseActivity
@@ -14,7 +16,6 @@ public class BankACC extends BaseActivity
     DatabaseHelper db;
     ArrayList<DATA_ITEM> data;
     CustomListAdapter adapter;
-    View footer;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -36,7 +37,7 @@ public class BankACC extends BaseActivity
 
     private void getData()
     {
-        int total=0,dtotal=0,ctotal=0;
+        int total=0,d_total=0,c_total=0;
         Cursor c=db.sortByName();
         if(c.getCount()==0)
             return;
@@ -44,12 +45,13 @@ public class BankACC extends BaseActivity
         {
             data.add(new DATA_ITEM(c.getString(1),c.getString(2),c.getString(3),c.getString(4)));
             total+=Integer.parseInt(c.getString(4));
-            dtotal+=Integer.parseInt(c.getString(2));
-            ctotal+=Integer.parseInt(c.getString(3));
+            d_total+=Integer.parseInt(c.getString(2));
+            c_total+=Integer.parseInt(c.getString(3));
         }
-        ((TextView)findViewById(R.id.total_tv)).setText(Integer.toString(total));
-        ((TextView)findViewById(R.id.ctotal_tv)).setText(Integer.toString(ctotal));
-        ((TextView)findViewById(R.id.dtotal_tv)).setText(Integer.toString(dtotal));
+        DecimalFormat dec_format=new DecimalFormat("#");
+        ((TextView)findViewById(R.id.total_tv)).setText(dec_format.format(total));
+        ((TextView)findViewById(R.id.ctotal_tv)).setText(dec_format.format(c_total));
+        ((TextView)findViewById(R.id.dtotal_tv)).setText(dec_format.format(d_total));
     }
 
     private void showFAB()

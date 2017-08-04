@@ -8,14 +8,12 @@ import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -41,8 +39,8 @@ public class NewStock extends BaseActivity
 
         rate_et=(EditText)findViewById(R.id.rate_et);
 
-        String[] sglf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
-        db=new DatabaseHelper(this,getString(R.string.SGL),sglf.length,sglf);
+        String[] sg_lf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
+        db=new DatabaseHelper(this,getString(R.string.SGL),sg_lf.length,sg_lf);
 
         stock_grp_list=new ArrayList<>();
 

@@ -19,13 +19,14 @@ public class Stock extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock);
-        getSupportActionBar().setTitle("Stock");
+        if (getSupportActionBar()!=null)
+            getSupportActionBar().setTitle("Stock");
 
         stock_groups = new SparseArray<>();
 
         View title=findViewById(R.id.title_line);
-        ((TextView)title.findViewById(R.id.data_dr)).setText("Sold");
-        ((TextView)title.findViewById(R.id.data_cr)).setText("Purchased");
+        ((TextView)title.findViewById(R.id.data_dr)).setText(R.string.Sold);
+        ((TextView)title.findViewById(R.id.data_cr)).setText(R.string.Purchased);
 
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.stock_list);
 
@@ -56,9 +57,9 @@ public class Stock extends BaseActivity
     {
         stock_groups.clear();
         int j=0;
-        String[] sglf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
+        String[] sg_lf=this.getResources().getStringArray(R.array.StockGroupListFeatures);
         String[] sgf=this.getResources().getStringArray(R.array.StockGroup_Features);
-        DatabaseHelper db_sgl=new DatabaseHelper(this,getString(R.string.SGL),sglf.length,sglf);
+        DatabaseHelper db_sgl=new DatabaseHelper(this,getString(R.string.SGL),sg_lf.length,sg_lf);
         Cursor c_sgl=db_sgl.sortByName();
         if(c_sgl.getCount()!=0)
         {

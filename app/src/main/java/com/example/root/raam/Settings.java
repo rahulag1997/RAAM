@@ -3,7 +3,6 @@ package com.example.root.raam;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,7 +13,8 @@ public class Settings extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getSupportActionBar().setTitle("Settings");
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle("Settings");
         showFAB();
 
         SharedPreferences sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
@@ -38,9 +38,9 @@ public class Settings extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
-                    ((TextView)findViewById(R.id.guide_tv)).setText("A New Form will be dispalyed on submission of A Form");
+                    ((TextView)findViewById(R.id.guide_tv)).setText(R.string.NewForm);
                 else
-                    ((TextView)findViewById(R.id.guide_tv)).setText("Will go Back on submission of a Form");
+                    ((TextView)findViewById(R.id.guide_tv)).setText(R.string.GoBack);
 
                 editor.putBoolean(getString(R.string.SHOW_AGAIN),isChecked);
                 editor.apply();

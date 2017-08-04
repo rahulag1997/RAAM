@@ -1,6 +1,5 @@
 package com.example.root.raam;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -15,10 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 class CustomListAdapterBillItem extends BaseAdapter
 {
+    private ViewGroup nl=null;
+    private DecimalFormat dec_format=new DecimalFormat("#");
     private ArrayList<String> stockGroups,stocks;
     private String[] units={"Dz","Pcs"};
     private ArrayList<BILL_ITEM> data;
@@ -85,7 +87,7 @@ class CustomListAdapterBillItem extends BaseAdapter
     {
         if(convertView==null)
         {
-            convertView=layoutInflater.inflate(R.layout.bill_title,null);
+            convertView=layoutInflater.inflate(R.layout.bill_title,nl);
         }
         BILL_ITEM bill_item=(BILL_ITEM) getItem(position);
         TextView sno_tv=(TextView)convertView.findViewById(R.id.sno_tv);
@@ -94,12 +96,12 @@ class CustomListAdapterBillItem extends BaseAdapter
         TextView unit_tv=(TextView)convertView.findViewById(R.id.unit_tv);
         TextView rate_tv=(TextView)convertView.findViewById(R.id.rate_tv);
         TextView amt_tv=(TextView)convertView.findViewById(R.id.amt_tv);
-        sno_tv.setText(Integer.toString(position+1));
+        sno_tv.setText(dec_format.format(position+1));
         name_tv.setText(bill_item.stk_grp+" "+bill_item.stk_item);
         qty_tv.setText(bill_item.quantity);
         unit_tv.setText(bill_item.unit);
         rate_tv.setText(bill_item.rate);
-        amt_tv.setText(Integer.toString(Integer.parseInt(bill_item.quantity)*Integer.parseInt(bill_item.rate)));
+        amt_tv.setText(dec_format.format(Integer.parseInt(bill_item.quantity)*Integer.parseInt(bill_item.rate)));
         convertView.setOnClickListener(new View.OnClickListener()
         {
             @Override

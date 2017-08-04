@@ -22,11 +22,14 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class NewBill extends BaseActivity implements CustomListAdapterBillItem.updateTotal
 {
+    private DecimalFormat dec_format=new DecimalFormat("#");
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ArrayList<String> names, stockGroups, stocks;
@@ -35,7 +38,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     String[] units={"Dz","Pcs"};    //TODO replace with units
 
     CustomListAdapterBillItem c_adapter;
-    int BILLNO;
+    int BILL_NO;
 
     Integer total=0;
     TextView total_tv;
@@ -51,10 +54,10 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bill);
         sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
-        BILLNO=sharedPreferences.getInt(getString(R.string.BILL_NUM),1);
+        BILL_NO =sharedPreferences.getInt(getString(R.string.BILL_NUM),1);
 
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle("Bill No. "+BILLNO);
+            getSupportActionBar().setTitle("Bill No. "+ BILL_NO);
         showFAB();
 
         names=new ArrayList<>();
@@ -78,14 +81,14 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         }
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        actv.setAdapter(adapter);
+        AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv.setAdapter(adapter);
 
         ListView list=(ListView)findViewById(R.id.item_list);
         c_adapter= new CustomListAdapterBillItem(this,data,this);
         list.setAdapter(c_adapter);
         total_tv=(TextView)findViewById(R.id.total_tv);
-        total_tv.setText(Integer.toString(total));
+        total_tv.setText(dec_format.format(total));
     }
 
 
@@ -111,9 +114,9 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
                     {
-                        String day=Integer.toString(dayOfMonth);
-                        String month=Integer.toString(monthOfYear+1);
-                        String yearS=Integer.toString(year);
+                        String day=dec_format.format(dayOfMonth);
+                        String month=dec_format.format(monthOfYear+1);
+                        String yearS=dec_format.format(year);
                         if(dayOfMonth<10)
                             day="0"+day;
                         if(monthOfYear<9)
@@ -215,7 +218,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
                             c_adapter.addItem(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             c_adapter.notifyDataSetChanged();
                             total+=Integer.parseInt(quantity)*Integer.parseInt(rate);
-                            total_tv.setText(Integer.toString(total));
+                            total_tv.setText(dec_format.format(total));
                             a_dialog.dismiss();
                         }
                     }
@@ -319,7 +322,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     private void addNewBill(String date,String name,String amount)
     {
         DatabaseHelper db_party;
-        String[] bill_statement={"Bill no "+BILLNO,amount,"",getString(R.string.Bill),date,Integer.toString(BILLNO)};
+        String[] bill_statement={"Bill no "+ BILL_NO,amount,"",getString(R.string.Bill),date,dec_format.format(BILL_NO)};
         if(name.equals("Cash"))
         {
             //update cash balance
@@ -364,7 +367,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             credit=credit+Integer.parseInt(amount);
 
             //Update in acc_list
-            db_accList.updateData(new String[] {name,cursor_accList.getString(2),Integer.toString(credit),Integer.toString(balance),cursor_accList.getString(5)});
+            db_accList.updateData(new String[] {name,cursor_accList.getString(2),dec_format.format(credit),dec_format.format(balance),cursor_accList.getString(5)});
 
             //insert in party account
             db_party=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
@@ -384,7 +387,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             editor.putInt(getString(R.string.SALES_CREDIT),updatedSales);
             editor.apply();
         }
-        new Updater().execute(date);;
+        new Updater().execute(date);
 
         Toast.makeText(getApplicationContext(),"Bill Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
@@ -396,7 +399,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     public void onProcessFilter(int change)
     {
         this.total-=change;
-        total_tv.setText(Integer.toString(this.total));
+        total_tv.setText(dec_format.format(this.total));
     }
     private class Updater extends AsyncTask<String,Void,Void>
     {
@@ -406,7 +409,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
             String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
             String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
-            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+BILLNO,item_fields.length,item_fields);
+            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+ BILL_NO,item_fields.length,item_fields);
             for (BILL_ITEM item:data)
             {
                 //insert item into bill
@@ -422,15 +425,15 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
                             break;
                     int sold=Integer.parseInt(c.getString(2))+Integer.parseInt(item.quantity);
                     int bal=Integer.parseInt(c.getString(4))-Integer.parseInt(item.quantity);
-                    db_sg.updateData(new String[]{item.stk_item,Integer.toString(sold),c.getString(3),Integer.toString(bal),item.rate});
+                    db_sg.updateData(new String[]{item.stk_item,dec_format.format(sold),c.getString(3),dec_format.format(bal),item.rate});
                 }
 
                 //insert into stock data
                 DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
-                db_stock.insertData(new String[]{"Bill_"+BILLNO,item.quantity,"","Bill",params[0]});
+                db_stock.insertData(new String[]{"Bill_"+ BILL_NO,item.quantity,"","Bill",params[0]});
             }
             editor=sharedPreferences.edit();
-            editor.putInt(getString(R.string.BILL_NUM),BILLNO+1);
+            editor.putInt(getString(R.string.BILL_NUM), BILL_NO +1);
             editor.apply();
             return null;
         }

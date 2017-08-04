@@ -1,6 +1,5 @@
 package com.example.root.raam;
 
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +14,6 @@ public class PurchaseView extends BaseActivity
 {
     CustomListAdapterBillItemView c_adapter;
     ArrayList<BILL_ITEM> data;
-    Integer total=0;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -28,8 +26,8 @@ public class PurchaseView extends BaseActivity
         DatabaseHelper db=new DatabaseHelper(this,"Purchases",acc_view_features.length,acc_view_features);
         Cursor c=db.getRow(PUR_NUM);
 
-        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText("Date");
-        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText("Name");
+        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText(getString(R.string.Date));
+        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText(getString(R.string.Name));
 
         c.moveToNext();
         ((TextView)findViewById(R.id.date_line).findViewById(R.id.value_tv)).setText(c.getString(5));
@@ -49,7 +47,7 @@ public class PurchaseView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Comming soon PUR",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Coming soon PUR",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -57,10 +55,10 @@ public class PurchaseView extends BaseActivity
 
     }
 
-    private void getData(int BILLNO)
+    private void getData(int BILL_NO)
     {
         String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
-        DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+BILLNO,item_fields.length,item_fields);
+        DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+BILL_NO,item_fields.length,item_fields);
         Cursor c=db_bill.getData();
         if(c.getCount()!=0)
         {

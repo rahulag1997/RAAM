@@ -22,15 +22,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class NewPurchase extends BaseActivity implements CustomListAdapterBillItem.updateTotal
 {
+    private DecimalFormat dec_format=new DecimalFormat("#");
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-
     ArrayList<String> names, stockGroups, stocks;
     ArrayList<BILL_ITEM> data;
     ArrayAdapter<String> stk_grp_adapter,stk_item_adapter;
@@ -79,14 +79,14 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        actv.setAdapter(adapter);
+        AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv.setAdapter(adapter);
 
         ListView list=(ListView)findViewById(R.id.item_list);
         c_adapter= new CustomListAdapterBillItem(this,data,this);
         list.setAdapter(c_adapter);
         total_tv=(TextView)findViewById(R.id.total_tv);
-        total_tv.setText(Integer.toString(total));
+        total_tv.setText(dec_format.format(total));
     }
 
     private void showFAB()
@@ -149,7 +149,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                getStock(stockGroups.get(position));;
+                getStock(stockGroups.get(position));
             }
 
             @Override
@@ -214,7 +214,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                             c_adapter.notifyDataSetChanged();
                             //data.add(new BILL_ITEM(stk_grp_spinner.getSelectedItem().toString(), stk_item_spinner.getSelectedItem().toString(),quantity,unit_spinner.getSelectedItem().toString(),rate));
                             total+=Integer.parseInt(quantity)*Integer.parseInt(rate);
-                            total_tv.setText(Integer.toString(total));
+                            total_tv.setText(dec_format.format(total));
                             a_dialog.dismiss();
                         }
                     }
@@ -350,7 +350,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         finish();
     }
 
-    class Updater extends AsyncTask<String,Void,Void>
+    private class Updater extends AsyncTask<String,Void,Void>
     {
         @Override
         protected Void doInBackground(String... params)
@@ -392,6 +392,6 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     public void onProcessFilter(int change)
     {
         this.total-=change;
-        total_tv.setText(Integer.toString(this.total));
+        total_tv.setText(dec_format.format(this.total));
     }
 }

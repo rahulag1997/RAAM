@@ -15,6 +15,7 @@ class CustomExpandableListAdapter extends BaseExpandableListAdapter
     private final SparseArray<Stock_group> stock_groups;
     private LayoutInflater inflater;
     private Activity activity;
+    private final ViewGroup nl=null;
 
     CustomExpandableListAdapter(Activity act, SparseArray<Stock_group> stock_groups)
     {
@@ -42,7 +43,7 @@ class CustomExpandableListAdapter extends BaseExpandableListAdapter
         final DATA_ITEM children = (DATA_ITEM) getChild(groupPosition, childPosition);
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.data_item, null);
+            convertView = inflater.inflate(R.layout.data_item, nl);
         }
         TextView name_tv = (TextView) convertView.findViewById(R.id.data_name);
         TextView dr_tv=(TextView)convertView.findViewById(R.id.data_dr);
@@ -102,7 +103,7 @@ class CustomExpandableListAdapter extends BaseExpandableListAdapter
     {
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.stock_group, null);
+            convertView = inflater.inflate(R.layout.stock_group, nl);
         }
         Stock_group group = (Stock_group) getGroup(groupPosition);
         ((CheckedTextView) convertView).setText(group.string);

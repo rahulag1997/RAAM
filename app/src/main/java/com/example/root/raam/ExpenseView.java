@@ -22,9 +22,9 @@ public class ExpenseView extends BaseActivity
         DatabaseHelper db=new DatabaseHelper(this,getString(R.string.Expense)+"_"+getString(R.string.EXP),acc_view_features.length,acc_view_features);
         Cursor c=db.getRow(EXP_NUM+1);
 
-        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText("Date");
-        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText("Name");
-        ((TextView)findViewById(R.id.amt_line).findViewById(R.id.type_tv)).setText("Amount");
+        ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText(getString(R.string.Date));
+        ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText(getString(R.string.Name));
+        ((TextView)findViewById(R.id.amt_line).findViewById(R.id.type_tv)).setText(getString(R.string.Amount));
         findViewById(R.id.notes_line).setVisibility(View.GONE);
         c.moveToNext();
         ((TextView)findViewById(R.id.date_line).findViewById(R.id.value_tv)).setText(c.getString(5));
@@ -38,7 +38,7 @@ public class ExpenseView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Comming soon EXP",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Coming soon EXP",Toast.LENGTH_SHORT).show();
 
             }
         });

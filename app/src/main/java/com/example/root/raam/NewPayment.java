@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -59,9 +57,9 @@ public class NewPayment extends BaseActivity
 
 
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        AutoCompleteTextView actv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        actv.setAdapter(adapter);
-        actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv.setAdapter(adapter);
+        ac_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {

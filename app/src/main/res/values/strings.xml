@@ -152,4 +152,8 @@
     </string-array>
     <string name="title_activity_payment_view">PaymentView</string>
     <string name="Purchases">Purchases</string>
+    <string name="NewForm">A New Form will be dispalyed on submission of A Form</string>
+    <string name="GoBack">Will go Back on submission of a Form</string>
+    <string name="Sold">Sold</string>
+    <string name="Purchased">Purchased</string>
 </resources>

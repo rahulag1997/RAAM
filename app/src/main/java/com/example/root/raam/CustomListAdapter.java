@@ -7,13 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 class CustomListAdapter extends BaseAdapter
 {
+    private ViewGroup nl=null;
     private ArrayList<DATA_ITEM> data;
     private LayoutInflater layoutInflater;
-    int sno=1;
     private String acc_type;
     Context context;
     CustomListAdapter(Context context, ArrayList<DATA_ITEM> data,String type)
@@ -45,7 +47,7 @@ class CustomListAdapter extends BaseAdapter
     {
         if(convertView==null)
         {
-            convertView=layoutInflater.inflate(R.layout.data_item,null);
+            convertView=layoutInflater.inflate(R.layout.data_item,nl);
         }
         DATA_ITEM item=(DATA_ITEM)getItem(position);
         final TextView name_tv=(TextView)convertView.findViewById(R.id.data_name);
@@ -53,7 +55,8 @@ class CustomListAdapter extends BaseAdapter
         TextView cr_tv=(TextView)convertView.findViewById(R.id.data_cr);
         TextView bal_tv=(TextView)convertView.findViewById(R.id.data_bal);
         TextView sno_tv=(TextView)convertView.findViewById(R.id.sno_tv);
-        sno_tv.setText(Integer.toString(position+1));
+        DecimalFormat dec_format=new DecimalFormat("#");
+        sno_tv.setText(dec_format.format(position+1));
         name_tv.setText(item.name);
         dr_tv.setText(item.dr);
         cr_tv.setText(item.cr);

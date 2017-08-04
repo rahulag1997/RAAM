@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 public class Sales extends BaseActivity
 {
     TextView cash_amt,credit_amt;
@@ -61,9 +63,10 @@ public class Sales extends BaseActivity
     @Override
     protected void onResume()
     {
+        DecimalFormat dec_format=new DecimalFormat("#");
         sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
-        cash_amt.setText(Integer.toString(sharedPreferences.getInt(getString(R.string.SALES_CASH),0)));
-        credit_amt.setText(Integer.toString(sharedPreferences.getInt(getString(R.string.SALES_CREDIT),0)));
+        cash_amt.setText(dec_format.format(sharedPreferences.getInt(getString(R.string.SALES_CASH),0)));
+        credit_amt.setText(dec_format.format(sharedPreferences.getInt(getString(R.string.SALES_CREDIT),0)));
         super.onResume();
     }
 }
