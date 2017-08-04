@@ -382,10 +382,9 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             editor=sharedPreferences.edit();
             int updatedSales=sharedPreferences.getInt(getString(R.string.SALES_CREDIT),0)+Integer.parseInt(amount);
             editor.putInt(getString(R.string.SALES_CREDIT),updatedSales);
-
             editor.apply();
         }
-        new Updater().execute(date);
+        new Updater().execute(date);;
 
         Toast.makeText(getApplicationContext(),"Bill Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
@@ -399,7 +398,6 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
         this.total-=change;
         total_tv.setText(Integer.toString(this.total));
     }
-
     private class Updater extends AsyncTask<String,Void,Void>
     {
         @Override
@@ -412,7 +410,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             for (BILL_ITEM item:data)
             {
                 //insert item into bill
-                db_bill.insertData(new String[]{item.stk_grp+" "+item.stk_item,item.quantity,item.unit,item.rate});
+                db_bill.insertData(new String[]{item.stk_grp,item.stk_item,item.quantity,item.unit,item.rate});
 
                 //update stock list
                 DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);

@@ -144,9 +144,12 @@
         <item>Password</item>
     </string-array>
     <string-array name="Item_Fields">
-        <item>Name</item>
+        <item>StockGroup</item>
+        <item>StockItem</item>
         <item>Quantity</item>
         <item>Unit</item>
         <item>Rate</item>
     </string-array>
+    <string name="title_activity_payment_view">PaymentView</string>
+    <string name="Purchases">Purchases</string>
 </resources>

@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class BillView extends BaseActivity
+public class PurchaseView extends BaseActivity
 {
     CustomListAdapterBillItemView c_adapter;
     ArrayList<BILL_ITEM> data;
@@ -21,12 +21,12 @@ public class BillView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_view);
-        int BILL_NUM=Integer.parseInt(getIntent().getStringExtra("BILL_NUM"));
+        int PUR_NUM=Integer.parseInt(getIntent().getStringExtra("PUR_NUM"));
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle("Bill No. "+BILL_NUM);
+            getSupportActionBar().setTitle("Purchase No. "+PUR_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
-        DatabaseHelper db=new DatabaseHelper(this,"Bills",acc_view_features.length,acc_view_features);
-        Cursor c=db.getRow(BILL_NUM);
+        DatabaseHelper db=new DatabaseHelper(this,"Purchases",acc_view_features.length,acc_view_features);
+        Cursor c=db.getRow(PUR_NUM);
 
         ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText("Date");
         ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText("Name");
@@ -49,18 +49,18 @@ public class BillView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Comming soon BILL",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Comming soon PUR",Toast.LENGTH_SHORT).show();
 
             }
         });
-        getData(BILL_NUM);
+        getData(PUR_NUM);
 
     }
 
     private void getData(int BILLNO)
     {
         String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
-        DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Bill_"+BILLNO,item_fields.length,item_fields);
+        DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+BILLNO,item_fields.length,item_fields);
         Cursor c=db_bill.getData();
         if(c.getCount()!=0)
         {

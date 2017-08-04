@@ -8,19 +8,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ReceiptView extends BaseActivity
+public class PaymentView extends BaseActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_view);
-        int RPT_NUM=Integer.parseInt(getIntent().getStringExtra("RPT_NUM"));
+        int PMT_NUM=Integer.parseInt(getIntent().getStringExtra("PMT_NUM"));
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle("Receipt No. "+RPT_NUM);
+            getSupportActionBar().setTitle("Payment No. "+PMT_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
-        DatabaseHelper db=new DatabaseHelper(this,"Receipts",acc_view_features.length,acc_view_features);
-        Cursor c=db.getRow(RPT_NUM);
+        DatabaseHelper db=new DatabaseHelper(this,"Payments",acc_view_features.length,acc_view_features);
+        Cursor c=db.getRow(PMT_NUM);
 
         ((TextView)findViewById(R.id.date_line).findViewById(R.id.type_tv)).setText("Date");
         ((TextView)findViewById(R.id.name_line).findViewById(R.id.type_tv)).setText("Name");
@@ -39,7 +39,7 @@ public class ReceiptView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Comming soon RPT",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Comming soon PMT",Toast.LENGTH_SHORT).show();
 
             }
         });

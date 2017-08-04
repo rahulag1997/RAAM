@@ -66,18 +66,21 @@ class CustomListAdapter2 extends BaseAdapter
                     case "OB" :
                         break;
                     case "Payment" :
+                        context.startActivity(new Intent(context,PaymentView.class).putExtra("PMT_NUM",item.num));
                         break;
                     case "Receipt":
                         context.startActivity(new Intent(context,ReceiptView.class).putExtra("RPT_NUM",item.num));
                         break;
                     case "Expense":
+                        context.startActivity(new Intent(context,ExpenseView.class).putExtra("EXP_NUM",item.num));
                         break;
                     case "Bill":
+                        context.startActivity(new Intent(context,BillView.class).putExtra("BILL_NUM",item.num));
                         break;
                     case "Purchase" :
+                        context.startActivity(new Intent(context,PurchaseView.class).putExtra("PUR_NUM",item.num));
                         break;
                 }
-                Toast.makeText(context,item.type,Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

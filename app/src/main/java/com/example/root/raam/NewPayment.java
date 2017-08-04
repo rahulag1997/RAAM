@@ -27,9 +27,9 @@ public class NewPayment extends BaseActivity
 {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    DatabaseHelper db_acc_creditor,db_acc_bank;
+    DatabaseHelper db_acc_creditor,db_acc_bank,db_acc_debtor;
     private String[] acc_view_features;
-    public int boundary;
+    public int boundary,boundary2;
     EditText amtET;
 
     ArrayList<String> names=new ArrayList<>();
@@ -51,6 +51,9 @@ public class NewPayment extends BaseActivity
         boundary=names.size();
         db_acc_bank=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Bank), acc_features.length, acc_features);
         getData(db_acc_bank);
+        boundary2=names.size();
+        db_acc_debtor=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Debtor), acc_features.length, acc_features);
+        getData(db_acc_debtor);
 
         sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
 
@@ -184,7 +187,17 @@ public class NewPayment extends BaseActivity
 
     private void addNewPayment(String date,String name,String amount,String extraNote)
     {
-        boolean isBank=names.indexOf(name)>boundary-1;
+        boolean isBank=false,isCreditor=false;
+        if(name.indexOf(name)<boundary)
+        {
+            isCreditor=true;
+            isBank=false;
+        }
+        else if(name.indexOf(name)<boundary2)
+        {
+            isCreditor=false;
+            isBank=true;
+        }
         DatabaseHelper db;
         if(isBank)
         {
@@ -206,27 +219,44 @@ public class NewPayment extends BaseActivity
             }
             db=new DatabaseHelper(this,getString(R.string.Bank)+"_"+name,acc_view_features.length,acc_view_features);
         }
-        else
+        else if(isCreditor)
         {
             Cursor c_acc=db_acc_creditor.getData();
             if(c_acc.getCount()!=0)
             {
-                while (c_acc.moveToNext())
-                {
-                    if(name.equals(c_acc.getString(1)))
+                while (c_acc.moveToNext()) {
+                    if (name.equals(c_acc.getString(1)))
                         break;
                 }
-            }
-            int debit=Integer.parseInt(c_acc.getString(2));
-            String three=c_acc.getString(3);
-            int balance=Integer.parseInt(c_acc.getString(4));
-            String five=c_acc.getString(5);
 
-            //update acc list
-            balance=balance-Integer.parseInt(amount);
-            debit=debit+Integer.parseInt(amount);
-            db_acc_creditor.updateData(new String[] {name,Integer.toString(debit),three,Integer.toString(balance),five});
+                int debit = Integer.parseInt(c_acc.getString(2));
+                int balance = Integer.parseInt(c_acc.getString(4));
+
+                //update acc list
+                balance = balance - Integer.parseInt(amount);
+                debit = debit + Integer.parseInt(amount);
+                db_acc_creditor.updateData(new String[]{name, Integer.toString(debit), c_acc.getString(3), Integer.toString(balance), c_acc.getString(5)});
+            }
             db=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
+        }
+        else
+        {
+            Cursor c_acc=db_acc_debtor.getData();
+            if(c_acc.getCount()!=0)
+            {
+                while (c_acc.moveToNext()) {
+                    if (name.equals(c_acc.getString(1)))
+                        break;
+                }
+                int credit = Integer.parseInt(c_acc.getString(3));
+                int balance = Integer.parseInt(c_acc.getString(4));
+
+                //update acc list
+                balance = balance + Integer.parseInt(amount);
+                credit = credit + Integer.parseInt(amount);
+                db_acc_debtor.updateData(new String[]{name, c_acc.getString(2), Integer.toString(credit), Integer.toString(balance), c_acc.getString(5)});
+            }
+            db=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
         }
         int PMT_NUM=sharedPreferences.getInt(getString(R.string.PMT_NUM),1);
         String[] payment_statement={"Payment No "+PMT_NUM,amount,extraNote,getString(R.string.Payment),date,""+PMT_NUM};

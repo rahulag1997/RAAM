@@ -38,7 +38,13 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".NewCompany" />
         <activity android:name=".Sales" />
-        <activity android:name=".ReceiptView"></activity>
+        <activity android:name=".ReceiptView" />
+        <activity
+            android:name=".PaymentView"
+            android:label="@string/title_activity_payment_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ExpenseView" />
+        <activity android:name=".PurchaseView"></activity>
     </application>
 
 </manifest>

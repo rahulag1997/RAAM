@@ -39,6 +39,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     Integer total=0;
     TextView total_tv;
     DatabaseHelper db;
+    int PUR_NUM;
 
     String[] acc_features, acc_view_features;
     @Override
@@ -47,9 +48,13 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_bill);
         sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+        PUR_NUM=sharedPreferences.getInt(getString(R.string.PUR_NUM),1);
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle(getString(R.string.Purchase));
+        {
+            getSupportActionBar().setTitle("Purchase No. "+PUR_NUM);
+        }
         showFAB();
+
 
         names=new ArrayList<>();
         stockGroups=new ArrayList<>();
@@ -312,7 +317,6 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
     private void addNewBill(String date,String name,String amount)
     {
-        int PUR_NUM=sharedPreferences.getInt(getString(R.string.PUR_NUM),1);
         String[] purchase_statement={"Purchase no "+PUR_NUM,amount,"",getString(R.string.Purchase),date,""+PUR_NUM};
         Cursor c_acc=db.getData();
         while (c_acc.moveToNext())
@@ -325,16 +329,18 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
         balance=balance+Integer.parseInt(amount);
         credit=credit+Integer.parseInt(amount);
+
         //update account list
         db.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
 
+        //insert into purchases
+        DatabaseHelper db_bills=new DatabaseHelper(this,getString(R.string.Purchases),acc_view_features.length,acc_view_features);
+        db_bills.insertData(purchase_statement);
+
         //insert into party account
         DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
-        db_party.insertData(new String[] {"Purchase on "+date,amount,"",getString(R.string.Purchase),date});
+        db_party.insertData(purchase_statement);
 
-        editor=sharedPreferences.edit();
-        editor.putInt(getString(R.string.PUR_NUM),PUR_NUM+1);
-        editor.apply();
 
         new Updater().execute(date);
 
@@ -352,11 +358,11 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
             String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
             String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
-            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+sharedPreferences.getInt("Purchase_Num",0),item_fields.length,item_fields);
+            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+PUR_NUM,item_fields.length,item_fields);
             for (BILL_ITEM item:data)
             {
                 //insert item into bill
-                db_bill.insertData(new String[]{item.stk_grp+" "+item.stk_item,item.quantity,item.unit,item.rate});
+                db_bill.insertData(new String[]{item.stk_grp,item.stk_item,item.quantity,item.unit,item.rate});
 
                 //update stock list
                 DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);
@@ -373,8 +379,11 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
                 //insert into stock data
                 DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
-                db_stock.insertData(new String[]{"Purchase_"+sharedPreferences.getInt("Purchase_Num",0),item.quantity,"","Purchase",params[0]});
+                db_stock.insertData(new String[]{"Purchase_"+PUR_NUM,item.quantity,"","Purchase",params[0]});
             }
+            editor=sharedPreferences.edit();
+            editor.putInt(getString(R.string.PUR_NUM),PUR_NUM+1);
+            editor.apply();
             return null;
         }
     }
