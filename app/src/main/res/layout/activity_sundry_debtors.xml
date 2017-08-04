@@ -4,22 +4,39 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
     tools:context="com.example.root.raam.SundryDebtors">
 
     <include layout="@layout/title"
         android:layout_width="match_parent"
         android:layout_margin="5dp"
+        android:id="@+id/title_line"
         android:layout_height="wrap_content">
     </include>
 
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/list">
-    </ListView>
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="horizontal">
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list">
+        </ListView>
 
+    </LinearLayout>
+
+   <include
+       layout="@layout/footer"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="5dp"
+       android:layout_marginRight="5dp"
+       android:layout_marginLeft="5dp"
+       android:layout_marginBottom="80dp"
+       android:layout_width="match_parent">
+   </include>
 
 </LinearLayout>

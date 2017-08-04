@@ -346,7 +346,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
         Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
-            startActivity(new Intent(getApplicationContext(),NewBill.class));
+            startActivity(new Intent(getApplicationContext(),NewPurchase.class));
         finish();
     }
 

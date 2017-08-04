@@ -46,5 +46,4 @@
         <activity android:name=".ExpenseView" />
         <activity android:name=".PurchaseView"></activity>
     </application>
-
 </manifest>

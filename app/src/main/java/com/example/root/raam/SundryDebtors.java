@@ -30,8 +30,6 @@ public class SundryDebtors extends BaseActivity
         ListView list = (ListView) findViewById(R.id.list);
         adapter = new CustomListAdapter(this, data,"Debtor");
         list.setAdapter(adapter);
-        footer=getLayoutInflater().inflate(R.layout.footer,null);
-        list.addFooterView(footer);
 
     }
 
@@ -48,9 +46,9 @@ public class SundryDebtors extends BaseActivity
             dtotal+=Integer.parseInt(c.getString(2));
             ctotal+=Integer.parseInt(c.getString(3));
         }
-        ((TextView)footer.findViewById(R.id.total_tv)).setText(Integer.toString(total));
-        ((TextView)footer.findViewById(R.id.ctotal_tv)).setText(Integer.toString(ctotal));
-        ((TextView)footer.findViewById(R.id.dtotal_tv)).setText(Integer.toString(dtotal));
+        ((TextView)findViewById(R.id.total_tv)).setText(Integer.toString(total));
+        ((TextView)findViewById(R.id.ctotal_tv)).setText(Integer.toString(ctotal));
+        ((TextView)findViewById(R.id.dtotal_tv)).setText(Integer.toString(dtotal));
     }
 
     private void showFAB()
