@@ -115,7 +115,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
     private void setData()
     {
         DatabaseHelper db_bills=new DatabaseHelper(this,getString(R.string.Bills),acc_view_features.length,acc_view_features);
-        Cursor c_bills=db_bills.getRow(BILL_NO);
+        Cursor c_bills=db_bills.getRowByNumber(BILL_NO,"Bill");
         c_bills.moveToNext();
         date_tv.setText(c_bills.getString(5));
         ac_tv.setText(c_bills.getString(1));
@@ -315,7 +315,7 @@ public class NewBill extends BaseActivity implements CustomListAdapterBillItem.u
             ac_tv.setError("Not in data");
             showDialog = false;
         }
-        if(amount.equals("0"))
+        if(amount.equals("0") || amount.equals(""))
         {
             Toast.makeText(getApplicationContext(),"No Item Added",Toast.LENGTH_SHORT).show();
             showDialog = false;

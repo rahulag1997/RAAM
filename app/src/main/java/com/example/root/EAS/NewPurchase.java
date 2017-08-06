@@ -119,7 +119,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     private void setData()
     {
         DatabaseHelper db_purchases=new DatabaseHelper(this,getString(R.string.Purchases),acc_view_features.length,acc_view_features);
-        Cursor c_purchases=db_purchases.getRow(PUR_NUM);
+        Cursor c_purchases=db_purchases.getRowByNumber(PUR_NUM,"Purchase");
         c_purchases.moveToNext();
         date_tv.setText(c_purchases.getString(5));
         ac_tv.setText(c_purchases.getString(1));
@@ -421,7 +421,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         credit=credit-prev_total;
 
         //update account list
-        db_accList.updateData(new String[] {prev_name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
+        db_accList.updateData(new String[] {prev_name,c_acc.getString(2),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
 
         //delete from party account
         DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+prev_name,acc_view_features.length,acc_view_features);
@@ -434,6 +434,9 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         @Override
         protected Void doInBackground(String... params)
         {
+            DatabaseHelper db_pur = new DatabaseHelper(getApplicationContext(), "Purchase_" + PUR_NUM, item_fields.length, item_fields);
+            if(editMode)
+                db_pur.clearTable();
             String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
             String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
             String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);

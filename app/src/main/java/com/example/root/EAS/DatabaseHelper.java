@@ -103,12 +103,11 @@ class DatabaseHelper extends SQLiteOpenHelper
         return db.query(TABLE_NAME,keys,null,null,null,null,"Name ASC");
     }
 
-    Cursor getRow(int num)
+    Cursor getRowByNumber(int num,String type)
     {
         SQLiteDatabase db=this.getWritableDatabase();
-        num--;
         String n=Integer.toString(num);
-        return db.rawQuery("select * from "+TABLE_NAME+" limit 1 offset "+n,null);
+        return db.rawQuery("select * from "+TABLE_NAME+" where Number='"+n+"' and Type='"+type+"'",null);
     }
 
     void deleteRowByBillName(String name)

@@ -143,4 +143,5 @@
     <string name="GoBack">Will go Back on submission of a Form</string>
     <string name="Sold">Sold</string>
     <string name="Purchased">Purchased</string>
+    <string name="CONFIRM_DEL">COMFIRM_DEL</string>
 </resources>

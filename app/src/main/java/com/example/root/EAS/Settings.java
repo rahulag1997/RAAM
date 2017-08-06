@@ -32,6 +32,18 @@ public class Settings extends BaseActivity {
             }
         });
 
+        CheckBox confirm_del=(CheckBox)findViewById(R.id.confirm_del);
+        confirm_del.setChecked(sharedPreferences.getBoolean(getString(R.string.CONFIRM_DEL),true));
+
+        confirm_del.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                editor.putBoolean(getString(R.string.CONFIRM_DEL),isChecked);
+                editor.apply();
+            }
+        });
+
         CheckBox repeat=(CheckBox)findViewById(R.id.redirect_check);
         repeat.setChecked(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true));
         repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

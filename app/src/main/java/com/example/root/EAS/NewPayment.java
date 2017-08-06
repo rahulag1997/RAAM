@@ -36,12 +36,13 @@ public class NewPayment extends BaseActivity
     private TextView dateText;
     AutoCompleteTextView ac_tv;
 
-    private final ArrayList<String> names=new ArrayList<>();
+    private ArrayList<String> names;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_payment);
+        names=new ArrayList<>();
 
         init();
 
@@ -64,7 +65,7 @@ public class NewPayment extends BaseActivity
 
     private void setData()
     {
-        Cursor c=db_pmt.getRow(PMT_NUM);
+        Cursor c=db_pmt.getRowByNumber(PMT_NUM,"Payment");
         c.moveToNext();
         dateText.setText(c.getString(5));
         ac_tv.setText(c.getString(1));

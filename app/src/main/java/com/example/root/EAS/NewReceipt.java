@@ -32,7 +32,7 @@ public class NewReceipt extends BaseActivity
     private String[] acc_view_features;
     private DatabaseHelper db_acc_debtor, db_acc_bank,db_rpt;
     private int boundary;
-    private final ArrayList<String> names=new ArrayList<>();
+    private ArrayList<String> names;
     private EditText amtET;
     private AutoCompleteTextView ac_tv;
     private TextView dateText;
@@ -41,6 +41,8 @@ public class NewReceipt extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_receipt);
+
+        names=new ArrayList<>();
 
         init();
 
@@ -66,7 +68,7 @@ public class NewReceipt extends BaseActivity
 
     private void setData()
     {
-        Cursor c=db_rpt.getRow(RPT_NUM);
+        Cursor c=db_rpt.getRowByNumber(RPT_NUM,"Receipt");
         c.moveToNext();
         dateText.setText(c.getString(5));
         ac_tv.setText(c.getString(1));

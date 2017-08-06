@@ -62,7 +62,7 @@ public class NewExpense extends BaseActivity
 
     private void setData()
     {
-        Cursor c=db_exp.getRow(EXP_NUM+1);
+        Cursor c=db_exp.getRowByNumber(EXP_NUM,"Expense");
         c.moveToNext();
         dateText.setText(c.getString(5));
         amtET.setText(c.getString(2));

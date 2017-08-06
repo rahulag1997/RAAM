@@ -18,6 +18,13 @@
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/confirm_del"
+        android:padding="10dp"
+        android:text="Confirm Before Delete"/>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/redirect_check"
         android:padding="10dp"
         android:text="Advance to New Form"/>
