@@ -31,45 +31,76 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     private final DecimalFormat dec_format=new DecimalFormat("#");
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private ArrayList<String> names;
-    private ArrayList<String> stockGroups;
-    private ArrayList<String> stocks;
-    private ArrayList<BILL_ITEM> data;
-    private ArrayAdapter<String> stk_grp_adapter;
-    private ArrayAdapter<String> stk_item_adapter;
+    private ArrayList<String> names, stockGroups, stocks;
+    private ArrayList<BILL_ITEM> data,data2;
     private final String[] units={"Dz","Pcs"};    //TODO replace with units
+    private String[] acc_features, acc_view_features, item_fields, sgf;
     private CustomListAdapterBillItem c_adapter;
-    private Integer total=0;
-    private TextView total_tv;
-    private DatabaseHelper db;
-    private int PUR_NUM;
-
-    private String[] acc_view_features;
+    private int PUR_NUM, total=0;
+    private boolean editMode;
+    private int prev_total;
+    private String prev_name;
+    private DatabaseHelper db_accList;
+    private ArrayAdapter<String> stk_grp_adapter, stk_item_adapter;
+    private AutoCompleteTextView ac_tv;
+    private TextView total_tv, date_tv;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_purchase);
-        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
-        PUR_NUM=sharedPreferences.getInt(getString(R.string.PUR_NUM),1);
-        if(getSupportActionBar()!=null)
-        {
-            getSupportActionBar().setTitle("Purchase No. "+PUR_NUM);
-        }
-        showFAB();
 
+        init();
+
+        if(getIntent().hasExtra("PUR_NUM"))
+        {
+            editMode = true;
+            PUR_NUM=getIntent().getIntExtra("PUR_NUM",1);
+            setData();
+        }
+        else
+        {
+            editMode=false;
+            PUR_NUM =sharedPreferences.getInt(getString(R.string.PUR_NUM),1);
+        }
+
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle("Purchase No. "+ PUR_NUM);
+
+        showFAB();
+    }
+
+    private void init()
+    {
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+
+        acc_features = getResources().getStringArray(R.array.Acc_Features);
+        acc_view_features = getResources().getStringArray(R.array.Acc_View_Features);
+        item_fields=getResources().getStringArray(R.array.Item_Fields);
+        sgf=getResources().getStringArray(R.array.StockGroup_Features);
 
         names=new ArrayList<>();
         stockGroups=new ArrayList<>();
         stocks=new ArrayList<>();
         data=new ArrayList<>();
+        data2=new ArrayList<>();
 
-        String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
-        acc_view_features = getResources().getStringArray(R.array.Acc_View_Features);
+        getNames();
 
-        db=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor), acc_features.length, acc_features);
-        Cursor c=db.getData();
+        date_tv =(TextView) findViewById(R.id.dateEditText);
+        total_tv=(TextView)findViewById(R.id.total_tv);
 
+        ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names));
+
+        c_adapter= new CustomListAdapterBillItem(this,data,this);
+        ((ListView)findViewById(R.id.item_list)).setAdapter(c_adapter);
+    }
+
+    private void getNames()
+    {
+        db_accList =new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor), acc_features.length, acc_features);
+        Cursor c= db_accList.sortByName();
         if(c.getCount()!=0)
         {
             while (c.moveToNext())
@@ -77,19 +108,6 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                 names.add(c.getString(1));
             }
         }
-
-
-
-
-        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
-        ac_tv.setAdapter(adapter);
-
-        ListView list=(ListView)findViewById(R.id.item_list);
-        c_adapter= new CustomListAdapterBillItem(this,data,this);
-        list.setAdapter(c_adapter);
-        total_tv=(TextView)findViewById(R.id.total_tv);
-        total_tv.setText(dec_format.format(total));
     }
 
     private void showFAB()
@@ -98,10 +116,35 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         fab.hide();
     }
 
+    private void setData()
+    {
+        DatabaseHelper db_purchases=new DatabaseHelper(this,getString(R.string.Purchases),acc_view_features.length,acc_view_features);
+        Cursor c_purchases=db_purchases.getRow(PUR_NUM);
+        c_purchases.moveToNext();
+        date_tv.setText(c_purchases.getString(5));
+        ac_tv.setText(c_purchases.getString(1));
+        total_tv.setText(c_purchases.getString(2));
+
+        DatabaseHelper db_purchase=new DatabaseHelper(getApplicationContext(),"Purchase_"+ PUR_NUM,item_fields.length,item_fields);
+        Cursor c=db_purchase.getData();
+        if(c.getCount()!=0)
+        {
+            while (c.moveToNext())
+            {
+                data2.add(new BILL_ITEM(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5)));
+                data.add(new BILL_ITEM(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5)));
+            }
+        }
+        c_adapter.notifyDataSetChanged();
+
+        total=Integer.parseInt(c_purchases.getString(2));
+        prev_total=total;
+        prev_name=c_purchases.getString(1);
+    }
+
     public void setDate(View view)
     {
         // Get Current Date
-        final TextView dateText=(TextView) findViewById(R.id.dateEditText);
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
@@ -125,8 +168,8 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                         if(year<100)
                             yearS="20"+yearS;
 
-                        dateText.setText(day + "-" + month + "-" + yearS);
-                        dateText.setError(null);
+                        date_tv.setText(day + "-" + month + "-" + yearS);
+                        date_tv.setError(null);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -135,11 +178,11 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
     public void addItem(View view)
     {
         View new_item=View.inflate(this,R.layout.new_item,null);
+
         final Spinner stk_grp_spinner=(Spinner)new_item.findViewById(R.id.stock_group_spinner);
         stk_grp_adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,stockGroups);
         stk_grp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stk_grp_spinner.setAdapter(stk_grp_adapter);
-
         getStockGroup();
 
         final Spinner stk_item_spinner=(Spinner)new_item.findViewById(R.id.stock_spinner);
@@ -260,21 +303,18 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
 
     public void submit(View view)
     {
-        TextView dateTV=(TextView) findViewById(R.id.dateEditText);
-        EditText nameET=(EditText)findViewById(R.id.name_actv);
-        TextView amtET=(TextView) findViewById(R.id.total_tv);
-        final String date=(dateTV.getText()).toString();
-        final String name=(nameET.getText()).toString();
-        final String amount=(amtET.getText()).toString();
+        final String date=(date_tv.getText()).toString();
+        final String name=(ac_tv.getText()).toString();
+        final String amount=(total_tv.getText()).toString();
         boolean showDialog=true;
         if(date.equals(""))
         {
-            dateTV.setError(getString(R.string.Required));
+            date_tv.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(!(names.contains(name)))
         {
-            nameET.setError("Not in data");
+            ac_tv.setError("Not in data");
             showDialog = false;
         }
         if(amount.equals("0"))
@@ -300,7 +340,7 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                     editor.putBoolean(getString(R.string.SHOW_DIALOG),false);
                     editor.apply();
                 }
-                addNewBill(date,name,amount);
+                addNewPurchase(date,name,amount);
             }
         });
         builder.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
@@ -314,19 +354,19 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             if(sharedPreferences.getBoolean(getString(R.string.SHOW_DIALOG),true))
                 builder.create().show();
             else
-                addNewBill(date,name,amount);
+                addNewPurchase(date,name,amount);
         }
     }
 
-    private void addNewBill(String date,String name,String amount)
+    private void addNewPurchase(String date,String name,String amount)
     {
-        String[] purchase_statement={"Purchase no "+PUR_NUM,amount,"",getString(R.string.Purchase),date,""+PUR_NUM};
-        Cursor c_acc=db.getData();
-        while (c_acc.moveToNext())
+        if(editMode)
         {
-            if(c_acc.getString(1).equals(name))
-                break;
+            editPurchase();
         }
+        String[] purchase_statement={name,amount,"",getString(R.string.Purchase),date,""+PUR_NUM};
+        Cursor c_acc=db_accList.getDataByName(name);
+        c_acc.moveToNext();
         int balance=Integer.parseInt(c_acc.getString(4));
         int credit=Integer.parseInt(c_acc.getString(3));
 
@@ -334,23 +374,59 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
         credit=credit+Integer.parseInt(amount);
 
         //update account list
-        db.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
-
-        //insert into purchases
-        DatabaseHelper db_bills=new DatabaseHelper(this,getString(R.string.Purchases),acc_view_features.length,acc_view_features);
-        db_bills.insertData(purchase_statement);
+        db_accList.updateData(new String[] {name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
 
         //insert into party account
         DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+name,acc_view_features.length,acc_view_features);
-        db_party.insertData(purchase_statement);
+        db_party.insertData(new String[] {"Purchase No. "+PUR_NUM,amount,"",getString(R.string.Purchase),date,""+PUR_NUM});
 
+
+        DatabaseHelper db_purchases=new DatabaseHelper(this,getString(R.string.Purchases),acc_view_features.length,acc_view_features);
+
+        String Message;
+        if(editMode)
+        {
+            Message="Purchase Edited";
+            db_purchases.updateVoucher(purchase_statement);
+            new ResetStock().execute();
+        }
+        else
+        {
+            //insert into purchases
+            db_purchases.insertData(purchase_statement);
+
+            Message="Purchase Added";
+            editor=sharedPreferences.edit();
+            editor.putInt(getString(R.string.PUR_NUM),PUR_NUM+1);
+            editor.apply();
+
+        }
 
         new Updater().execute(date);
 
-        Toast.makeText(getApplicationContext(),"Purchase Added",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),Message,Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewPurchase.class));
         finish();
+    }
+
+    private void editPurchase()
+    {
+        Cursor c_acc=db_accList.getDataByName(prev_name);
+        c_acc.moveToNext();
+        int balance=Integer.parseInt(c_acc.getString(4));
+        int credit=Integer.parseInt(c_acc.getString(3));
+
+        balance=balance-prev_total;
+        credit=credit-prev_total;
+
+        //update account list
+        db_accList.updateData(new String[] {prev_name,c_acc.getString(3),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
+
+        //delete from party account
+        DatabaseHelper db_party=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+prev_name,acc_view_features.length,acc_view_features);
+        db_party.deleteVoucher(new String[] {getString(R.string.Purchase),""+PUR_NUM});
+
     }
 
     private class Updater extends AsyncTask<String,Void,Void>
@@ -361,11 +437,11 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
             String[] stk_features=getResources().getStringArray(R.array.Acc_Features);
             String[] item_fields=getResources().getStringArray(R.array.Item_Fields);
             String[] sgf=getResources().getStringArray(R.array.StockGroup_Features);
-            DatabaseHelper db_bill=new DatabaseHelper(getApplicationContext(),"Purchase_"+PUR_NUM,item_fields.length,item_fields);
+            DatabaseHelper db_purchase=new DatabaseHelper(getApplicationContext(),"Purchase_"+PUR_NUM,item_fields.length,item_fields);
             for (BILL_ITEM item:data)
             {
-                //insert item into bill
-                db_bill.insertData(new String[]{item.stk_grp,item.stk_item,item.quantity,item.unit,item.rate});
+                //insert item into purchase
+                db_purchase.insertData(new String[]{item.stk_grp,item.stk_item,item.quantity,item.unit,item.rate});
 
                 //update stock list
                 DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);
@@ -384,9 +460,33 @@ public class NewPurchase extends BaseActivity implements CustomListAdapterBillIt
                 DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,stk_features.length,stk_features);
                 db_stock.insertData(new String[]{"Purchase_"+PUR_NUM,item.quantity,"","Purchase",params[0]});
             }
-            editor=sharedPreferences.edit();
-            editor.putInt(getString(R.string.PUR_NUM),PUR_NUM+1);
-            editor.apply();
+
+            return null;
+        }
+    }
+
+    private class ResetStock extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+            for (BILL_ITEM item:data2)
+            {
+                //update stock list
+                DatabaseHelper db_sg=new DatabaseHelper(getApplicationContext(),getString(R.string.SG)+"_"+item.stk_grp,sgf.length,sgf);
+                Cursor c=db_sg.getDataByName(item.stk_item);
+                if(c.getCount()!=0)
+                {
+                    c.moveToNext();
+                    int purchased=Integer.parseInt(c.getString(3))-Integer.parseInt(item.quantity);
+                    int bal=Integer.parseInt(c.getString(4))-Integer.parseInt(item.quantity);
+                    db_sg.updateData(new String[]{item.stk_item,c.getString(2),Integer.toString(purchased),Integer.toString(bal),item.rate});
+                }
+                //insert into stock data
+                //acc_features is the features that a stocks in a stock group will have
+                DatabaseHelper db_stock=new DatabaseHelper(getApplicationContext(),item.stk_grp+"_"+item.stk_item,acc_features.length,acc_features);
+                db_stock.deleteRowByBillName("Purchase_"+ PUR_NUM);
+            }
             return null;
         }
     }

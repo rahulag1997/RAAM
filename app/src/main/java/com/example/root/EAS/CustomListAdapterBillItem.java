@@ -16,6 +16,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 class CustomListAdapterBillItem extends BaseAdapter
 {
@@ -23,7 +25,7 @@ class CustomListAdapterBillItem extends BaseAdapter
     private final DecimalFormat dec_format=new DecimalFormat("#");
     private final ArrayList<String> stockGroups;
     private final ArrayList<String> stocks;
-    private final String[] units={"Dz","Pcs"};
+    private final List<String> units= Arrays.asList("Dz","Pcs");
     private final ArrayList<BILL_ITEM> data;
     private final LayoutInflater layoutInflater;
     private final Context context;
@@ -128,6 +130,7 @@ class CustomListAdapterBillItem extends BaseAdapter
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
                     {
+                        stocks.clear();
                         DatabaseHelper db_stkGrp=new DatabaseHelper(context,context.getString(R.string.StockGroup)+"_"+stockGroups.get(position),stockGroupFeatures.length,stockGroupFeatures);
                         Cursor c=db_stkGrp.getData();
                         if(c.getCount()!=0)
@@ -155,12 +158,11 @@ class CustomListAdapterBillItem extends BaseAdapter
                 unit_spinner.setAdapter(unit_adapter);
 
                 final EditText rate_et=(EditText)new_item.findViewById(R.id.rate_et);
-                //TODO fix spinner item
-                //stk_grp_spinner.setSelection(testStock.getIndex(selected_item.stk_grp);
-                //stk_item_spinner.setSelection(testStock_list.getIndex(selected_item.stk_item);
+                stk_grp_spinner.setSelection(stockGroups.indexOf(selected_item.stk_grp));
                 quantity_et.setText(selected_item.quantity);
-                //unit_spinner.setSelection(units.getIndex(selected_item.unit);
+                unit_spinner.setSelection(units.indexOf(selected_item.unit));
                 rate_et.setText(selected_item.rate);
+                stk_item_spinner.setSelection(stocks.indexOf(selected_item.stk_item));
 
                 change=Integer.parseInt(selected_item.quantity)*Integer.parseInt(selected_item.rate);
 

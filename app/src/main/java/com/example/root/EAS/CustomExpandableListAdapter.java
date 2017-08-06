@@ -10,11 +10,14 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 class CustomExpandableListAdapter extends BaseExpandableListAdapter
 {
     private final SparseArray<Stock_group> stock_groups;
     private final LayoutInflater inflater;
     private final ViewGroup nl=null;
+    private final DecimalFormat dec_format=new DecimalFormat("#");
 
     CustomExpandableListAdapter(Activity act, SparseArray<Stock_group> stock_groups)
     {
@@ -47,6 +50,8 @@ class CustomExpandableListAdapter extends BaseExpandableListAdapter
         TextView dr_tv=(TextView)convertView.findViewById(R.id.data_dr);
         TextView cr_tv=(TextView)convertView.findViewById(R.id.data_cr);
         TextView bal_tv =  (TextView) convertView.findViewById(R.id.data_bal);
+        TextView sno_tv=(TextView)convertView.findViewById(R.id.sno_tv);
+        sno_tv.setText(dec_format.format(childPosition+1));
         name_tv.setText(children.name);
         dr_tv.setText(children.dr);
         cr_tv.setText(children.cr);

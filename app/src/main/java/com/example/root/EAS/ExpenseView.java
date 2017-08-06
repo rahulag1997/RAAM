@@ -1,6 +1,7 @@
 package com.example.root.EAS;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ public class ExpenseView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_view);
-        int EXP_NUM=Integer.parseInt(getIntent().getStringExtra("EXP_NUM"));
+        final int EXP_NUM=Integer.parseInt(getIntent().getStringExtra("EXP_NUM"));
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle("Expense No. "+EXP_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
@@ -38,7 +39,8 @@ public class ExpenseView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Coming soon EXP",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),NewExpense.class).putExtra("EXP_NUM",EXP_NUM));
+                finish();
 
             }
         });

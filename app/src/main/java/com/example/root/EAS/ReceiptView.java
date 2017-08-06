@@ -1,6 +1,7 @@
 package com.example.root.EAS;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -11,11 +12,11 @@ import android.widget.Toast;
 public class ReceiptView extends BaseActivity
 {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_view);
-        int RPT_NUM=Integer.parseInt(getIntent().getStringExtra("RPT_NUM"));
+        final int RPT_NUM=Integer.parseInt(getIntent().getStringExtra("RPT_NUM"));
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle("Receipt No. "+RPT_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
@@ -39,8 +40,8 @@ public class ReceiptView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Coming soon RPT",Toast.LENGTH_SHORT).show();
-
+                startActivity(new Intent(getApplicationContext(),NewReceipt.class).putExtra("RPT_NUM",RPT_NUM));
+                finish();
             }
         });
     }

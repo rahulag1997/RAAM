@@ -1,5 +1,6 @@
 package com.example.root.EAS;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -14,7 +15,7 @@ public class PaymentView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt_view);
-        int PMT_NUM=Integer.parseInt(getIntent().getStringExtra("PMT_NUM"));
+        final int PMT_NUM=Integer.parseInt(getIntent().getStringExtra("PMT_NUM"));
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle("Payment No. "+PMT_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
@@ -38,7 +39,8 @@ public class PaymentView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Coming soon PMT",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(),NewPayment.class).putExtra("PMT_NUM",PMT_NUM));
+                finish();
 
             }
         });

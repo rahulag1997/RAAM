@@ -1,6 +1,7 @@
 package com.example.root.EAS;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,7 +21,7 @@ public class BillView extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_view);
-        int BILL_NUM=Integer.parseInt(getIntent().getStringExtra("BILL_NUM"));
+        final int BILL_NUM=Integer.parseInt(getIntent().getStringExtra("BILL_NUM"));
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle("Bill No. "+BILL_NUM);
         String[] acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
@@ -48,8 +49,8 @@ public class BillView extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Coming soon BILL",Toast.LENGTH_SHORT).show();
-
+                startActivity(new Intent(getApplicationContext(),NewBill.class).putExtra("BILL_NUM",BILL_NUM));
+                finish();
             }
         });
         getData(BILL_NUM);

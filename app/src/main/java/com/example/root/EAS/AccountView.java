@@ -13,8 +13,9 @@ import java.util.ArrayList;
 public class AccountView extends BaseActivity
 {
     private String acc_type;
-    private final ArrayList<DATA_ITEM> data=new ArrayList<>();
+    private ArrayList<DATA_ITEM> data;
     private DatabaseHelper db;
+    CustomListAdapter2 adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -31,14 +32,15 @@ public class AccountView extends BaseActivity
 
         String[] acc_view_features = this.getResources().getStringArray(R.array.Acc_View_Features);
         db=new DatabaseHelper(this,acc_type+"_"+name, acc_view_features.length, acc_view_features);
-        getData();
 
         TextView tv=(TextView)findViewById(R.id.data_name);
         tv.setText(R.string.Particulars);
 
+        data=new ArrayList<>();
         ListView list = (ListView) findViewById(R.id.list_particulars);
-        CustomListAdapter2 adapter = new CustomListAdapter2(this, data);
+        adapter = new CustomListAdapter2(this, data);
         list.setAdapter(adapter);
+        getData();
     }
 
     private void getData()
@@ -173,6 +175,7 @@ public class AccountView extends BaseActivity
                     Toast.makeText(this, R.string.Error_Account_Mismatch,Toast.LENGTH_SHORT).show();
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     private void showFAB()
@@ -187,5 +190,13 @@ public class AccountView extends BaseActivity
                 //TODO delete dialog and confirmation
             }
         });
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        data.clear();
+        getData();
+        super.onRestart();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.root.EAS;
 
 import android.app.DatePickerDialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,30 +24,66 @@ import java.util.Calendar;
 
 public class NewPayment extends BaseActivity
 {
+    private boolean editMode;
+    private int prev_amt;
+    private String prev_name;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private DatabaseHelper db_acc_creditor;
-    private DatabaseHelper db_acc_bank;
-    private DatabaseHelper db_acc_debtor;
+    private DatabaseHelper db_acc_creditor, db_acc_bank, db_acc_debtor, db_pmt;
     private String[] acc_view_features;
-    private int boundary;
-    private int boundary2;
+    private int boundary, boundary2, PMT_NUM;
     private EditText amtET;
+    private TextView dateText;
+    AutoCompleteTextView ac_tv;
 
     private final ArrayList<String> names=new ArrayList<>();
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_payment);
+
+        init();
+
+        if(getIntent().hasExtra("PMT_NUM"))
+        {
+            editMode=true;
+            PMT_NUM=getIntent().getIntExtra("PMT_NUM",1);
+            setData();
+        }
+        else
+        {
+            editMode=false;
+            PMT_NUM=sharedPreferences.getInt("PMT_NUM",1);
+        }
+
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle(R.string.Payment);
+            getSupportActionBar().setTitle("Payment No."+PMT_NUM);
         showFAB();
+    }
+
+    private void setData()
+    {
+        Cursor c=db_pmt.getRow(PMT_NUM);
+        c.moveToNext();
+        dateText.setText(c.getString(5));
+        ac_tv.setText(c.getString(1));
+        amtET.setText(c.getString(2));
+        prev_amt=Integer.parseInt(c.getString(2));
+        prev_name=c.getString(1);
+    }
+
+    private void init()
+    {
+        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
+
         amtET=(EditText)findViewById(R.id.amountEditText);
+        dateText=(TextView) findViewById(R.id.dateEditText);
 
         String[] acc_features = getResources().getStringArray(R.array.Acc_Features);
         acc_view_features=getResources().getStringArray(R.array.Acc_View_Features);
 
-
+        db_pmt=new DatabaseHelper(this,"Payments",acc_view_features.length,acc_view_features);
         db_acc_creditor=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Creditor), acc_features.length, acc_features);
         getData(db_acc_creditor);
         boundary=names.size();
@@ -56,11 +93,8 @@ public class NewPayment extends BaseActivity
         db_acc_debtor=new DatabaseHelper(this,getString(R.string.Account)+"_"+getString(R.string.Debtor), acc_features.length, acc_features);
         getData(db_acc_debtor);
 
-        sharedPreferences=this.getSharedPreferences(getString(R.string.MyPrefs), Context.MODE_PRIVATE);
-
-
         ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,names);
-        AutoCompleteTextView ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
+        ac_tv=(AutoCompleteTextView)findViewById(R.id.name_actv);
         ac_tv.setAdapter(adapter);
         ac_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,21 +159,19 @@ public class NewPayment extends BaseActivity
 
     public void submit(View view)
     {
-        TextView dateET=(TextView) findViewById(R.id.dateEditText);
-        EditText nameET=(EditText)findViewById(R.id.name_actv);
-        final String date=(dateET.getText()).toString();
-        final String name=(nameET.getText()).toString();
+        final String date=(dateText.getText()).toString();
+        final String name=(ac_tv.getText()).toString();
         final String amount=(amtET.getText()).toString();
         final String extraNote=((EditText)findViewById(R.id.notesEditText)).getText().toString();
         boolean showDialog=true;
         if(date.equals(""))
         {
-            dateET.setError(getString(R.string.Required));
+            dateText.setError(getString(R.string.Required));
             showDialog = false;
         }
         if(!(names.contains(name)))
         {
-            nameET.setError("Not in data");
+            ac_tv.setError("Not in data");
             showDialog = false;
         }
         if(amount.equals(""))
@@ -188,13 +220,17 @@ public class NewPayment extends BaseActivity
 
     private void addNewPayment(String date,String name,String amount,String extraNote)
     {
+        if(editMode)
+        {
+            editPayment();
+        }
         boolean isBank=false,isCreditor=false;
-        if(name.indexOf(name)<boundary)
+        if(names.indexOf(name)<boundary)
         {
             isCreditor=true;
             isBank=false;
         }
-        else if(name.indexOf(name)<boundary2)
+        else if(names.indexOf(name)<boundary2)
         {
             isCreditor=false;
             isBank=true;
@@ -202,14 +238,10 @@ public class NewPayment extends BaseActivity
         DatabaseHelper db;
         if(isBank)
         {
-            Cursor c_acc=db_acc_bank.getData();
+            Cursor c_acc=db_acc_bank.getDataByName(name);
             if(c_acc.getCount()!=0)
             {
-                while (c_acc.moveToNext())
-                {
-                    if (name.equals(c_acc.getString(1)))
-                        break;
-                }
+                c_acc.moveToNext();
                 int credit=Integer.parseInt(c_acc.getString(3));
                 int balance=Integer.parseInt(c_acc.getString(4));
 
@@ -222,13 +254,10 @@ public class NewPayment extends BaseActivity
         }
         else if(isCreditor)
         {
-            Cursor c_acc=db_acc_creditor.getData();
+            Cursor c_acc=db_acc_creditor.getDataByName(name);
             if(c_acc.getCount()!=0)
             {
-                while (c_acc.moveToNext()) {
-                    if (name.equals(c_acc.getString(1)))
-                        break;
-                }
+                c_acc.moveToNext();
 
                 int debit = Integer.parseInt(c_acc.getString(2));
                 int balance = Integer.parseInt(c_acc.getString(4));
@@ -242,13 +271,10 @@ public class NewPayment extends BaseActivity
         }
         else
         {
-            Cursor c_acc=db_acc_debtor.getData();
+            Cursor c_acc=db_acc_debtor.getDataByName(name);
             if(c_acc.getCount()!=0)
             {
-                while (c_acc.moveToNext()) {
-                    if (name.equals(c_acc.getString(1)))
-                        break;
-                }
+                c_acc.moveToNext();
                 int credit = Integer.parseInt(c_acc.getString(3));
                 int balance = Integer.parseInt(c_acc.getString(4));
 
@@ -259,33 +285,115 @@ public class NewPayment extends BaseActivity
             }
             db=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+name,acc_view_features.length,acc_view_features);
         }
-        int PMT_NUM=sharedPreferences.getInt(getString(R.string.PMT_NUM),1);
-        String[] payment_statement={"Payment No "+PMT_NUM,amount,extraNote,getString(R.string.Payment),date,""+PMT_NUM};
-
+        String[] payment_statement={name,amount,extraNote,getString(R.string.Payment),date,""+PMT_NUM};
 
         //insert in party account
         db.insertData(payment_statement);
 
-        //insert into cash acc
         DatabaseHelper db_cashInHand=new DatabaseHelper(this,getString(R.string.Cash)+"_"+getString(R.string.Cash_in_Hand),acc_view_features.length,acc_view_features);
-        db_cashInHand.insertData(payment_statement);
 
-        //insert into payment list
-        DatabaseHelper db_pmt=new DatabaseHelper(this,"Payments",acc_view_features.length,acc_view_features);
-        db_pmt.insertData(payment_statement);
-
+        if(editMode)
+        {
+            //update cash acc
+            db_cashInHand.updateVoucher(payment_statement);
+            //update payment list
+            db_pmt.updateVoucher(payment_statement);
+        }
+        else
+        {
+            //insert into cash acc
+            db_cashInHand.insertData(payment_statement);
+            //insert into payment list
+            db_pmt.insertData(payment_statement);
+        }
+        String Message;
         //update cash
-        int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)-Integer.parseInt(amount);
+        int updatedCash=sharedPreferences.getInt(getString(R.string.CASH_IN_HAND),0)+prev_amt-Integer.parseInt(amount);
         editor=sharedPreferences.edit();
         editor.putInt(getString(R.string.CASH_IN_HAND),updatedCash);
-        editor.putInt(getString(R.string.PMT_NUM),PMT_NUM+1);
+        if(editMode)
+        {
+            Message="Payment Edited";
+        }
+        else
+        {
+            Message="Payment Added";
+            editor.putInt(getString(R.string.PMT_NUM),PMT_NUM+1);
+        }
         editor.apply();
 
 
-        Toast.makeText(getApplicationContext(),"Payment Added",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), Message,Toast.LENGTH_SHORT).show();
         if(sharedPreferences.getBoolean(getString(R.string.SHOW_AGAIN),true))
             startActivity(new Intent(getApplicationContext(),NewPayment.class));
         finish();
+    }
+
+    private void editPayment()
+    {
+        boolean isBank=false,isCreditor=false;
+        if(names.indexOf(prev_name)<boundary)
+        {
+            isCreditor=true;
+            isBank=false;
+        }
+        else if(names.indexOf(prev_name)<boundary2)
+        {
+            isCreditor=false;
+            isBank=true;
+        }
+        DatabaseHelper db;
+        if(isBank)
+        {
+            Cursor c_acc=db_acc_bank.getDataByName(prev_name);
+            if(c_acc.getCount()!=0)
+            {
+                c_acc.moveToNext();
+                int credit=Integer.parseInt(c_acc.getString(3));
+                int balance=Integer.parseInt(c_acc.getString(4));
+
+                //update acc list
+                balance=balance-prev_amt;
+                credit+=credit-prev_amt;
+                db_acc_bank.updateData(new String[] {prev_name,c_acc.getString(2),Integer.toString(credit),Integer.toString(balance),c_acc.getString(5)});
+            }
+            db=new DatabaseHelper(this,getString(R.string.Bank)+"_"+prev_name,acc_view_features.length,acc_view_features);
+        }
+        else if(isCreditor)
+        {
+            Cursor c_acc=db_acc_creditor.getDataByName(prev_name);
+            if(c_acc.getCount()!=0)
+            {
+                c_acc.moveToNext();
+
+                int debit = Integer.parseInt(c_acc.getString(2));
+                int balance = Integer.parseInt(c_acc.getString(4));
+
+                //update acc list
+                balance = balance +prev_amt;
+                debit = debit -prev_amt;
+                db_acc_creditor.updateData(new String[]{prev_name, Integer.toString(debit), c_acc.getString(3), Integer.toString(balance), c_acc.getString(5)});
+            }
+            db=new DatabaseHelper(this,getString(R.string.Creditor)+"_"+prev_name,acc_view_features.length,acc_view_features);
+        }
+        else
+        {
+            Cursor c_acc=db_acc_debtor.getDataByName(prev_name);
+            if(c_acc.getCount()!=0)
+            {
+                c_acc.moveToNext();
+                int credit = Integer.parseInt(c_acc.getString(3));
+                int balance = Integer.parseInt(c_acc.getString(4));
+
+                //update acc list
+                balance = balance -prev_amt;
+                credit = credit -prev_amt;
+                db_acc_debtor.updateData(new String[]{prev_name, c_acc.getString(2), Integer.toString(credit), Integer.toString(balance), c_acc.getString(5)});
+            }
+            db=new DatabaseHelper(this,getString(R.string.Debtor)+"_"+prev_name,acc_view_features.length,acc_view_features);
+        }
+        //delete from party account
+        db.deleteVoucher(new String[] {getString(R.string.Payment),""+PMT_NUM});
     }
 
 }

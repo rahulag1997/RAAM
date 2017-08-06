@@ -60,12 +60,8 @@ class DatabaseHelper extends SQLiteOpenHelper
     void updateData(String[] data)
     {
         SQLiteDatabase db=this.getWritableDatabase();
-        Cursor c=this.getData();
-        while (c.moveToNext())
-        {
-            if(c.getString(1).equals(data[0]))
-                break;
-        }
+        Cursor c=db.rawQuery("select * from "+TABLE_NAME+" where Name='"+data[0]+"'",null);
+        c.moveToNext();
         ContentValues contentValues=new ContentValues();
         contentValues.put("ID",c.getInt(0));
         for (int i=1;i<=numVal;i++)
@@ -73,6 +69,26 @@ class DatabaseHelper extends SQLiteOpenHelper
             contentValues.put(keys[i],data[i-1]);
         }
         db.update(TABLE_NAME,contentValues,"ID = ?",new String[] {c.getString(0)});
+        c.close();
+    }
+    Cursor getDataByName(String name)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        return db.rawQuery("select * from "+TABLE_NAME+" where Name='"+name+"'",null);
+    }
+    void updateVoucher(String[] data)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor c=db.rawQuery("select * from "+TABLE_NAME+" where Number='"+data[5]+"' and Type='"+data[3]+"'",null);
+        c.moveToNext();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("ID",c.getInt(0));
+        for (int i=1;i<=numVal;i++)
+        {
+            contentValues.put(keys[i],data[i-1]);
+        }
+        db.update(TABLE_NAME,contentValues,"ID = ?",new String[] {c.getString(0)});
+        c.close();
     }
     /*
     void sortByDate(int dateColumn)
@@ -93,5 +109,24 @@ class DatabaseHelper extends SQLiteOpenHelper
         num--;
         String n=Integer.toString(num);
         return db.rawQuery("select * from "+TABLE_NAME+" limit 1 offset "+n,null);
+    }
+
+    void deleteRowByBillName(String name)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_NAME+" where Name='"+name+"'");
+    }
+
+    boolean deleteVoucher(String[] data)
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        return db.delete(TABLE_NAME,"type=? and number=?",new String[]{data[0],data[1]})>0;
+        //db.execSQL("delete from "+TABLE_NAME+" where Number='"+data[5]+"' and Type='"+data[3]+"'");
+    }
+
+    void clearTable()
+    {
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_NAME);
     }
 }
